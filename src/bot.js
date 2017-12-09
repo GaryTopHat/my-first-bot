@@ -2,7 +2,7 @@ const Bot = require('./lib/Bot')
 const SOFA = require('sofa-js')
 const Fiat = require('./lib/Fiat')
 const PsqlStore = require('./PsqlStore')
-const IdService = require('./IdService')
+const IdService = require('./lib/IdService')
 
 let bot = new Bot()
 
