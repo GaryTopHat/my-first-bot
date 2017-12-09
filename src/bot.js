@@ -2,6 +2,7 @@ const Bot = require('./lib/Bot')
 const SOFA = require('sofa-js')
 const Fiat = require('./lib/Fiat')
 const PsqlStore = require('./PsqlStore')
+const IdService = require('./IdService')
 
 let bot = new Bot()
 
@@ -127,10 +128,32 @@ function displayAddBotInstructions(session) {
 
 function tryAddNewBot(session, message){
   session.set('expected_user_input_type', null)
-  
+   
   let botUserName = message.body.trim().replace("@", "")
-  sendMessage(session, "The bot was added to the list. Congrats!. ")
-  
+  let atBotUserName = "@" + botUserName 
+  let bot = IdService.getUser(botUserName)
+
+  if(!bot.errors){ 
+    if(bot.is_app){
+      sendMessage(session, atBotUserName + " was added to the list.")
+    }   
+    else 
+      sendMessage(session, atBotUserName + " is human!")
+  }
+  else{
+    if(bot.errors.id === "not_found")
+      sendMessage(session, atBotUserName + " does not exist.")
+    else 
+      sendMessage(session,  + "An error occurred while trying to find" + atBotUserName + ".")
+  }
+}
+
+function fethResigsteredBotByToshiId(bot_toshi_id)
+{
+  bot.dbStore.fetchrow("SELECT * FROM registered_bots where toshi_id = $1", [bot_toshi_id])
+    .then((bot) => {
+    return bot
+  }).catch((err) => Logger.error(err));
 }
 
 function donate(session) {
