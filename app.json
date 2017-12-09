@@ -1,16 +1,16 @@
 {
-  "name": "Toshi SOFA App",
-  "description": "Foundation for building a SOFA app for Toshi (Chat Bot / Web View)",
+  "name": "MoreBots",
+  "description": "A list of of Toshi bots",
   "repository": "https://github.com/toshiapp/toshi-sofa-app",
   "env": {
     "TOKEN_APP_SEED": {
       "description": "12 word secret backup phrase"
     },
     "TOKEN_APP_USERNAME": {
-      "description": "Choose a username for your app: letters, numbers, and underscores only"
+      "description": "MoreBots"
     },
     "TOKEN_APP_NAME": {
-      "description": "Choose a display name - all characters allowed"
+      "description": "MoreBots
     },
     "STAGE": {
       "description": "Stage of deployment: development (default) or production",

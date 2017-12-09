@@ -1,8 +1,21 @@
 const Bot = require('./lib/Bot')
 const SOFA = require('sofa-js')
 const Fiat = require('./lib/Fiat')
+const PsqlStore = require('./PsqlStore')
 
 let bot = new Bot()
+
+const DATABASE_TABLES = `
+CREATE TABLE IF NOT EXISTS registered_bots (
+    toshi_id VARCHAR PRIMARY KEY,
+    entry_created_on TIMESTAMP WITHOUT TIME ZONE DEFAULT (now() AT TIME ZONE 'utc'),
+	entry_created_by VARCHAR PRIMARY KEY,
+    entry_modified_on TIMESTAMP WITHOUT TIME ZONE DEFAULT (now() AT TIME ZONE 'utc'),
+	entry_modified_by VARCHAR PRIMARY KEY,
+    is_online BOOLEAN DEFAULT TRUE,
+	is_working_properly BOOLEAN DEFAULT TRUE
+);
+`;
 
 // ROUTING
 
@@ -27,16 +40,21 @@ bot.onEvent = function(session, message) {
 }
 
 function onMessage(session, message) {
-  welcome(session)
+
+  if(session.get('expected_user_input_type') === "bot_username")
+    tryAddNewBot(message)
+  else 
+    welcome(session)
 }
+
 
 function onCommand(session, command) {
   switch (command.content.value) {
-    case 'ping':
-      pong(session)
+    case 'show all bots':
+      dislayAllBots(session)
       break
-    case 'count':
-      count(session)
+    case 'add a bot': //TODO remove: count
+      displayAddBotInstructions(session)
       break
     case 'donate':
       donate(session)
@@ -66,21 +84,54 @@ function onPayment(session, message) {
   }
 }
 
+bot.onReady = () => {
+  bot.dbStore = new PsqlStore(bot.client.config.storage.postgres.url, process.env.STAGE || 'development');
+  bot.dbStore.initialize(DATABASE_TABLES).then(() => {}).catch((err) => {
+    Logger.error(err);
+  });
+};
+
+const DEFAULT_CONTROLS = [
+	{type: 'button', label: 'Show all bots', value: 'show all bots'},
+    {type: 'button', label: 'Add a bot', value: 'add a bot'},
+    {type: 'button', label: 'Donate', value: 'donate'}
+];
+
+
 // STATES
 
 function welcome(session) {
-  sendMessage(session, `Hello Token!`)
+  sendMessage(session, `Welcome to MoreBots! A user maintained list of bots on Toshi`)
 }
 
-function pong(session) {
-  sendMessage(session, `Pong`)
+function dislayAllBots(session) {
+  bot.dbStore.fetchval("SELECT toshi_id FROM registered_bots").then((bots) => {
+    // :bulb:
+    let msg = `\uD83D\uDCA1 Here is the list of all registered bots: ${bots}`;
+    sendMessage(session, msg);
+  }).catch((err) => {
+    Logger.error(err);
+  });
 }
 
 // example of how to store state on each user
-function count(session) {
-  let count = (session.get('count') || 0) + 1
-  session.set('count', count)
-  sendMessage(session, `${count}`)
+function displayAddBotInstructions(session) {
+  session.set('expected_user_input_type', "bot_username")
+  let msg = "Type the username of the bot you want to add (Make sure to uer the username and not the display name)."
+
+  session.reply(SOFA.Message({
+    body: msg,
+    controls: null,
+    showKeyboard: true,
+  }))
+}
+
+function tryAddNewBot(session, message){
+  session.set('expected_user_input_type', null)
+  
+  let botUserName = message.trim().replace("@", "")
+  sendMessage("The bot was added to the list. Congrats!. ")
+  
 }
 
 function donate(session) {
@@ -93,11 +144,7 @@ function donate(session) {
 // HELPERS
 
 function sendMessage(session, message) {
-  let controls = [
-    {type: 'button', label: 'Ping', value: 'ping'},
-    {type: 'button', label: 'Count', value: 'count'},
-    {type: 'button', label: 'Donate', value: 'donate'}
-  ]
+  let controls =  DEFAULT_CONTROLS
   session.reply(SOFA.Message({
     body: message,
     controls: controls,
