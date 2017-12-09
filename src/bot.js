@@ -114,7 +114,6 @@ function dislayAllBots(session) {
   });
 }
 
-// example of how to store state on each user
 function displayAddBotInstructions(session) {
   session.set('expected_user_input_type', "bot_username")
   let msg = "Type the username of the bot you want to add (Make sure to uer the username and not the display name)."
