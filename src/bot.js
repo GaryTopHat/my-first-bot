@@ -128,7 +128,7 @@ function displayAddBotInstructions(session) {
 function tryAddNewBot(session, message){
   session.set('expected_user_input_type', null)
   
-  let botUserName = message.trim().replace("@", "")
+  let botUserName = message.body.trim().replace("@", "")
   sendMessage("The bot was added to the list. Congrats!. ")
   
 }
