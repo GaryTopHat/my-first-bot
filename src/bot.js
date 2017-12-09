@@ -42,7 +42,7 @@ bot.onEvent = function(session, message) {
 function onMessage(session, message) {
 
   if(session.get('expected_user_input_type') === "bot_username")
-    tryAddNewBot(message)
+    tryAddNewBot(session, message)
   else 
     welcome(session)
 }
