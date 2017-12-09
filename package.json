@@ -1,6 +1,6 @@
 {
-  "name": "toshi-app-js",
-  "version": "0.2.3",
+  "name": "my-rist-app",
+  "version": "0.0.1",
   "description": "",
   "main": "src/bot.js",
   "dependencies": {

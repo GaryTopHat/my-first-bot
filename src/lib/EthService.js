@@ -26,7 +26,7 @@ class EthServiceClient {
     this.ws = new WebSocketConnection(this.base_url,
                                       null,
                                       this.signing_key,
-                                      "toshi-app-js");
+                                      "my-first-app");
     this.ws.connect();
     this.ws.listen(([method, params]) => {
       if (method == 'subscription') {
