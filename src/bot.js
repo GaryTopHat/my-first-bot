@@ -131,7 +131,13 @@ function tryAddNewBot(session, message){
    
   let botUserName = message.body.trim().replace("@", "")
   let atBotUserName = "@" + botUserName 
-  let bot = IdService.getUser(botUserName)
+
+  IdService.getUser(botUserName).then((userFound) => {
+    let bot = userFound
+    onReady()
+  })
+
+  //let bot = IdService.getUser(botUserName)
 
   if(!bot.errors){ 
     if(bot.is_app){
