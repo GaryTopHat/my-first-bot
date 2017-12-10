@@ -19,7 +19,8 @@ class Config {
     if (this.storage.envKey) { this.storageUrl = process.env[this.storage.envKey]; }
     if (this.redis.uri) { this.redisUrl = this.redis.uri; }
     if (this.redis.envKey) { this.redisUrl = process.env[this.redis.envKey]; }
-	  if (!this.authorUsername) { this.authorUsername = process.env.TOSHI_APP_AUTHOR_USERNAME || "";}  //Empty string by default, because @undefined and @null are valid username
+    //Author username is space by default, because @undefined and @null woul be valid usernames and we don't want to point to them accidentally. Space is a not valid username.
+	  if (!this.authorUsername) { this.authorUsername = process.env.TOSHI_APP_AUTHOR_USERNAME || " ";}  
     if (!this.seedMnemonic) { this.seedMnemonic = process.env.TOSHI_APP_SEED || process.env.TOKEN_APP_SEED; }
 
     if (!this.seedMnemonic) {
