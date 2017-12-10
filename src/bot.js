@@ -4,6 +4,7 @@ const Fiat = require('./lib/Fiat');
 const PsqlStore = require('./PsqlStore');
 const IdService = require('./lib/IdService');
 const Logger = require('./lib/Logger');
+const unit = require('ethjs-unit');
 
 let _bot = new Bot();
 
@@ -127,7 +128,7 @@ function onPayment(session, message) {
     } else if (message.status == 'confirmed') {
       sendMessageWithinSession(session, `Your payment was confirmed.\nThanks for the donation! 🙏`);
       sendNotificationToAuthor("Hi owner\n" + session.user.username + " made a donation for " 
-        + unit.fromWei(parseInt(message.value, 16), 'ether') + " ETH.\nTo address: " + message.toAddress);
+        + unit.fromWei(message.value, 'ether') + " ETH.\nTo address: " + message.toAddress);
     } else if (message.status == 'error') {
       sendMessageWithinSession(session, `There was an error with your payment!🚫`);
     }
