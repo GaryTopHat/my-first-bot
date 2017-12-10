@@ -150,7 +150,7 @@ function displayAllBots(session) {
 };
 
 function prettyPrintList(bots){
-  return bots.map(bot => "@" + bot.username).sort().join(" ");
+  return bots.map(bot => "@" + bot.username).sort().join("\n");
 }
 
 function displayAddBotInstructions(session) {
