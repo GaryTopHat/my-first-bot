@@ -19,6 +19,7 @@ class Config {
     if (this.storage.envKey) { this.storageUrl = process.env[this.storage.envKey]; }
     if (this.redis.uri) { this.redisUrl = this.redis.uri; }
     if (this.redis.envKey) { this.redisUrl = process.env[this.redis.envKey]; }
+	  if (!this.authorUsername) { this.authorUsername = process.env.TOSHI_APP_AUTHOR_USERNAME;}
     if (!this.seedMnemonic) { this.seedMnemonic = process.env.TOSHI_APP_SEED || process.env.TOKEN_APP_SEED; }
 
     if (!this.seedMnemonic) {
