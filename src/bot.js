@@ -61,7 +61,7 @@ function onMessage(session, message) {
 function onCommand(session, command) {
   switch (command.content.value) {
     case 'show all bots':
-      dislayAllBots(session);
+      displayAllBots(session);
       break;
     case 'add a bot':
       displayAddBotInstructions(session);
@@ -100,8 +100,8 @@ function welcome(session) {
   sendMessage(session, `Welcome to MoreBots! A user maintained list of bots on Toshi`);
 };
 
-function dislayAllBots(session) {
-  bot.dbStore.fetchval("SELECT toshi_id FROM registered_bots").then((bots) => {
+function displayAllBots(session) {
+  _bot.dbStore.fetchval("SELECT toshi_id FROM registered_bots").then((bots) => {
     // :bulb:
     let msg = bots ? `Here is the list of all registered bots: ${bots}` : "The list is empty.";
 
