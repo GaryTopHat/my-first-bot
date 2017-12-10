@@ -20,7 +20,6 @@ CREATE TABLE IF NOT EXISTS registered_bots (
 `;
 
 _bot.onReady = () => {
-  Logger.info("Executing on Ready NOW");
   _bot.dbStore = new PsqlStore(_bot.client.config.storage.postgres.url, process.env.STAGE || 'development');
   _bot.dbStore.initialize(DATABASE_TABLES).then(() => {}).catch((err) => {
     Logger.error(err);
@@ -161,7 +160,7 @@ function insertNewBot(session, newBot)
 
 function fetchResigsteredBotByToshiId(bot_toshi_id)
 {
-  _bot.dbStore.fetchrow("SELECT * FROM registered_bots where toshi_id = $1", [bot_toshi_id])
+  return _bot.dbStore.fetchrow("SELECT * FROM registered_bots where toshi_id = $1", [bot_toshi_id])
     .then((botFound) => {
     return botFound;
   }).catch((err) => Logger.error(err));
