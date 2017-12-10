@@ -131,13 +131,12 @@ function tryAddNewBot(session, message){
 
     if(botFound){ 
       if(botFound.is_app){
-        fetchResigsteredBotByToshiId(botFound.toshi_id).then((duplicateBot) => {
-          Logger.info("I FOUND THIS TOSHI ID " + duplicateBot.toshi_id);
-          if(duplicateBot)
+        fetchResigsteredBotByToshiId(botFound.toshi_id).then((sameBotAlreadyInList) => {
+         
+          if(sameBotAlreadyInList)
             sendMessage(session, atBotUserName + " is already in the list.");
           else
             insertNewBot(session, botFound);
-
         });      
       }   
       else 
