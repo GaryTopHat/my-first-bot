@@ -134,28 +134,21 @@ function tryAddNewBot(session, message){
   let atBotUserName = "@" + botUserName 
 
   IdService.getUser(botUserName).then((bot) => {
-    //let bot = userFound
-  
 
-  Logger.warning("Log start")
-  Logger.warning(Object.getOwnPropertyNames(bot).toString())
-  Logger.warning("Log end")
-  //let bot = IdService.getUser(botUserName)
-
-  if(!bot.hasOwnProperty("errors")){ 
-    if(bot.is_app){
-      sendMessage(session, atBotUserName + " was added to the list.")
-    }   
-    else 
-      sendMessage(session, atBotUserName + " is human!")
-  }
-  else{
-    if(bot.errors.id === "not_found")
-      sendMessage(session, atBotUserName + " does not exist.")
-    else 
-      sendMessage(session,  + "An error occurred while trying to find" + atBotUserName + ".")
-  }
-}).catch((err) => Logger.error(err))
+    if(!bot.hasOwnProperty("errors")){ 
+      if(bot.is_app){
+        sendMessage(session, atBotUserName + " was added to the list.")
+      }   
+      else 
+        sendMessage(session, atBotUserName + " is human!")
+    }
+    else{
+      if(bot.errors.id === "not_found")
+        sendMessage(session, atBotUserName + " does not exist.")
+      else 
+        sendMessage(session,  + "An error occurred while trying to find" + atBotUserName + ".")
+    }
+  }).catch((err) => Logger.error(err))
 }
 
 function fethResigsteredBotByToshiId(bot_toshi_id)
