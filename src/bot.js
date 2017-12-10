@@ -97,7 +97,7 @@ function onPayment(session, message) {
 // STATES
 
 function welcome(session) {
-  sendMessage(session, `Welcome to Bots! A user maintained list of the bots on Toshi`);
+  sendMessage(session, `Welcome to Bots! A user maintained list of the bots on Toshi.`);
 };
 
 function displayAllBots(session) {
