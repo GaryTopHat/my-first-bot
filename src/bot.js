@@ -132,7 +132,7 @@ function tryAddNewBot(session, message){
 
     if(botFound){ 
       if(botFound.is_app){
-        if(fethResigsteredBotByToshiId(botFound.toshi_id))
+        if(fethResigsteredBotByToshiId(botFound.toshi_id) != null)
           sendMessage(session, atBotUserName + " is already in the list.");
         else
           insertNewBot(session, botFound);
@@ -161,6 +161,7 @@ function fethResigsteredBotByToshiId(bot_toshi_id)
 {
   _bot.dbStore.fetchrow("SELECT * FROM registered_bots where toshi_id = $1", [bot_toshi_id])
     .then((botFound) => {
+    Logger.info("I FOUND THIS TOSHI ID " + botFound.toshi_id);
     return botFound;
   }).catch((err) => Logger.error(err));
 };
