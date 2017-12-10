@@ -138,7 +138,7 @@ function tryAddNewBot(session, message){
 
   //let bot = IdService.getUser(botUserName)
 
-  if(!bot.errors){ 
+  if(!bot.hasOwnProperty("errors")){ 
     if(bot.is_app){
       sendMessage(session, atBotUserName + " was added to the list.")
     }   
