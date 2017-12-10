@@ -1,11 +1,11 @@
-const Bot = require('./lib/Bot')
-const SOFA = require('sofa-js')
-const Fiat = require('./lib/Fiat')
-const PsqlStore = require('./PsqlStore')
-const IdService = require('./lib/IdService')
+const Bot = require('./lib/Bot');
+const SOFA = require('sofa-js');
+const Fiat = require('./lib/Fiat');
+const PsqlStore = require('./PsqlStore');
+const IdService = require('./lib/IdService');
 const Logger = require('./lib/Logger');
 
-let bot = new Bot()
+let bot = new Bot();
 
 const DATABASE_TABLES = `
 CREATE TABLE IF NOT EXISTS registered_bots (
@@ -31,45 +31,45 @@ bot.onReady = () => {
 bot.onEvent = function(session, message) {
   switch (message.type) {
     case 'Init':
-      welcome(session)
-      break
+      welcome(session);
+      break;
     case 'Message':
-      onMessage(session, message)
-      break
+      onMessage(session, message);
+      break;
     case 'Command':
-      onCommand(session, message)
-      break
+      onCommand(session, message);
+      break;
     case 'Payment':
-      onPayment(session, message)
-      break
+      onPayment(session, message);
+      break;
     case 'PaymentRequest':
-      welcome(session)
-      break
+      welcome(session);
+      break;
   }
-}
+};
 
 function onMessage(session, message) {
 
   if(session.get('expected_user_input_type') === "bot_username")
-    tryAddNewBot(session, message)
+    tryAddNewBot(session, message);
   else 
-    welcome(session)
-}
+    welcome(session);
+};
 
 
 function onCommand(session, command) {
   switch (command.content.value) {
     case 'show all bots':
-      dislayAllBots(session)
-      break
+      dislayAllBots(session);
+      break;
     case 'add a bot':
-      displayAddBotInstructions(session)
-      break
+      displayAddBotInstructions(session);
+      break;
     case 'donate':
-      donate(session)
-      break
+      donate(session);
+      break;
     }
-}
+};
 
 function onPayment(session, message) {
   if (message.fromAddress == session.config.paymentAddress) {
@@ -93,18 +93,11 @@ function onPayment(session, message) {
   }
 }
 
-const DEFAULT_CONTROLS = [
-	{type: 'button', label: 'Show all bots', value: 'show all bots'},
-    {type: 'button', label: 'Add a bot', value: 'add a bot'},
-    {type: 'button', label: 'Donate', value: 'donate'}
-];
-
-
 // STATES
 
 function welcome(session) {
-  sendMessage(session, `Welcome to MoreBots! A user maintained list of bots on Toshi`)
-}
+  sendMessage(session, `Welcome to MoreBots! A user maintained list of bots on Toshi`);
+};
 
 function dislayAllBots(session) {
   bot.dbStore.fetchval("SELECT toshi_id FROM registered_bots").then((bots) => {
@@ -114,42 +107,42 @@ function dislayAllBots(session) {
   }).catch((err) => {
     Logger.error(err);
   });
-}
+};
 
 function displayAddBotInstructions(session) {
-  session.set('expected_user_input_type', "bot_username")
-  let msg = "Type the username of the bot you want to add (Make sure to use the username and not the display name)."
+  session.set('expected_user_input_type', "bot_username");
+  let msg = "Type the username of the bot you want to add (Make sure to use the username and not the display name).";
 
   session.reply(SOFA.Message({
     body: msg,
     controls: null,
     showKeyboard: true,
-  }))
-}
+  }));
+};
 
 function tryAddNewBot(session, message){
-  session.set('expected_user_input_type', null)
+  session.set('expected_user_input_type', null);
    
-  let botUserName = message.body.trim().replace("@", "")
-  let atBotUserName = "@" + botUserName 
+  let botUserName = message.body.trim().replace("@", "");
+  let atBotUserName = "@" + botUserName ;
 
   IdService.getUser(botUserName).then((bot) => {
 
     if(bot){ 
       if(bot.is_app){
         if(fethResigsteredBotByToshiId(bot.toshi_id))
-          sendMessage(session, atBotUserName + " is already in the list.")
+          sendMessage(session, atBotUserName + " is already in the list.");
         else
-          insertNewBot(session, bot)
+          insertNewBot(session, bot);
       }   
       else 
-        sendMessage(session, atBotUserName + " is human!")
+        sendMessage(session, atBotUserName + " is human!");
     }
     else{
-        sendMessage(session, atBotUserName + " does not exist.")
+        sendMessage(session, atBotUserName + " does not exist.");
     }
-  }).catch((err) => Logger.error(err))
-}
+  }).catch((err) => Logger.error(err));
+};
 
 function insertNewBot(session, bot)
 {
@@ -160,32 +153,36 @@ function insertNewBot(session, bot)
   }).catch((err) => {
     Logger.error(err);
   });
-}
+};
 
 function fethResigsteredBotByToshiId(bot_toshi_id)
 {
-  Logger.info(Object.getOwnPropertyNames(bot.dbStore).toString())
+  Logger.info(Object.getOwnPropertyNames(bot.dbStore).toString());
 
   bot.dbStore.fetchrow("SELECT * FROM registered_bots where toshi_id = $1", [bot_toshi_id])
     .then((bot) => {
-    return bot
+    return bot;
   }).catch((err) => Logger.error(err));
-}
+};
 
 function donate(session) {
   // request $1 USD at current exchange rates
   Fiat.fetch().then((toEth) => {
-    session.requestEth(toEth.USD(1))
-  })
-}
+    session.requestEth(toEth.USD(1));
+  });
+};
 
 // HELPERS
 
 function sendMessage(session, message) {
-  let controls =  DEFAULT_CONTROLS
+  let controls =  [
+    {type: 'button', label: 'Show all bots', value: 'show all bots'},
+      {type: 'button', label: 'Add a bot', value: 'add a bot'},
+      {type: 'button', label: 'Donate', value: 'donate'}
+  ];
   session.reply(SOFA.Message({
     body: message,
     controls: controls,
     showKeyboard: false,
-  }))
-}
+  }));
+};
