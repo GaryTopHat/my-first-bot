@@ -116,7 +116,7 @@ function prettyPrintList(bots){
 }
 
 function displayAddBotInstructions(session) {
-  let msg = "Add a bot at anytime by typing the username of the bot, including the @ character (example: @ToshiBot).";
+  let msg = 'Add a bot anytime by typing its username, starting with "@" (example: @ToshiBot).';
 
   session.reply(SOFA.Message({
     body: msg,
