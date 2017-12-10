@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS registered_bots (
 `;
 
 bot.onReady = () => {
+  Logger.info("THIS IS On ready");
   bot.dbStore = new PsqlStore(bot.client.config.storage.postgres.url, process.env.STAGE || 'development');
   bot.dbStore.initialize(DATABASE_TABLES).then(() => {}).catch((err) => {
     Logger.error(err);
