@@ -138,7 +138,7 @@ function tryAddNewBot(session, message){
   }).catch((err) => Logger.error(err))
 
   Logger.warning("Log start")
-  Logger.warning(bot.getOwnPropertyNames().toString())
+  Logger.warning(Object.getOwnPropertyNames(bot).toString())
   Logger.warning("Log end")
   //let bot = IdService.getUser(botUserName)
 
