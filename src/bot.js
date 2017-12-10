@@ -137,7 +137,7 @@ function tryAddNewBot(session, message){
     let bot = userFound
   }).catch((err) => Logger.error(err))
 
-  Logger.error(bot)
+  Logger.debug(JSON.stringify(bot))
   //let bot = IdService.getUser(botUserName)
 
   if(!bot.hasOwnProperty("errors")){ 
