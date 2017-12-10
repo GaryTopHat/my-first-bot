@@ -101,7 +101,12 @@ function onCommand(session, command) {
     case 'add a bot':
       displayAddBotInstructions(session);
       break;
-    }
+    default:
+      if (command.value in FAQ) {  
+        let msgBody = FAQ[command.value].message
+        sendMessage(session, msgBody);
+      }
+    }  
 };
 
 function onPayment(session, message) {
@@ -136,9 +141,9 @@ function displayAllBots(session) {
   _bot.dbStore.fetch("SELECT username FROM registered_bots").then((bots) => {
     // :bulb:
 
-    let msg = (bots && bots.length > 0) ? ("Here is the list of all registered bots:\n" + prettyPrintList(bots)) : "No bot listed yet. Maybe add one?";
+    let msgBody = (bots && bots.length > 0) ? ("Here is the list of all registered bots:\n" + prettyPrintList(bots)) : "No bot listed yet. Maybe add one?";
 
-    sendMessage(session, msg);
+    sendMessage(session, msgBody);
   }).catch((err) => {
     Logger.error(err);
   });
@@ -149,10 +154,10 @@ function prettyPrintList(bots){
 }
 
 function displayAddBotInstructions(session) {
-  let msg = 'Add a bot anytime by typing its username, starting with "@" (example: @ToshiBot).';
+  let msgBody = 'Add a bot anytime by typing its username, starting with "@" (example: @ToshiBot).';
 
   session.reply(SOFA.Message({
-    body: msg,
+    body: msgBody,
     controls: null,
     showKeyboard: true,
   }));
@@ -211,9 +216,9 @@ function fetchResigsteredBotByToshiId(bot_toshi_id)
 
 // HELPERS
 
-function sendMessage(session, message) {
+function sendMessage(session, msgBody) {
   session.reply(SOFA.Message({
-    body: message,
+    body: msgBody,
     controls: DEFAULT_CONTROLS,
     showKeyboard: false,
   }));
