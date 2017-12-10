@@ -164,7 +164,9 @@ function insertNewBot(session, bot)
 
 function fethResigsteredBotByToshiId(bot_toshi_id)
 {
-  bot.dbStore.fetchRow("SELECT * FROM registered_bots where toshi_id = $1", [bot_toshi_id])
+  Logger.info(Object.getOwnPropertyNames(dbStore).toString())
+
+  bot.dbStore.fetchrow("SELECT * FROM registered_bots where toshi_id = $1", [bot_toshi_id])
     .then((bot) => {
     return bot
   }).catch((err) => Logger.error(err));
