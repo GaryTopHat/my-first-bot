@@ -122,7 +122,7 @@ function displayAddBotInstructions(session) {
   }));
 };
 
-//TODO: Handle the case where a user wants to add a bot that already exist in the db by username,
+//TODO: Handle the case where a user wants to add a bot that already exists in the db by username,
 //but with a different toshi_ID. In this case we need to try to add the old bot again - thus mapping it
 //to its new toshi_id if it exists. And then we need to assign the new username to the toshi_id already in the
 //DB. Finally, we need to display a message to the user explaining what happened (the level of detail is yet
