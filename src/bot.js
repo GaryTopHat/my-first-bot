@@ -7,6 +7,41 @@ const Logger = require('./lib/Logger');
 
 let _bot = new Bot();
 
+// CONTROLS
+
+const FAQ = {
+  'faq:about': {
+    label: 'About',
+    message: `This bot is a list of bots on Toshi. Maintained by users like you, for users like you. To make the list as complete as possible, please add the bots you find! \ud83d\ude4b` // :raised_hand:
+  },
+  'faq:payment': {
+    label: "Donations",
+    message: `Feel free to send any amount to this bot as a donation. 🙏` // :folded_hands:
+  },
+  'faq:who': {
+    label: "Who's who made this?",
+    message: "@Gary \ud83c\udfa9  All feedback or suggestions welcome!" // :top_hat:
+  }
+};
+
+const FAQ_MENU = {
+  type: "group",
+  label: "FAQ",
+  controls: Object.keys(FAQ).map((value) => {
+    let option = FAQ[value];
+    return {type: "button", label: option.label, value: value};
+  })
+};
+
+const DEFAULT_CONTROLS = [
+    {type: 'button', label: 'Show all bots', value: 'show all bots'},
+    {type: 'button', label: 'Add a bot', value: 'add a bot'},
+    FAQ_MENU    
+];
+
+
+// DATABASE
+
 const DATABASE_TABLES = `
 CREATE TABLE IF NOT EXISTS registered_bots (
     toshi_id VARCHAR PRIMARY KEY,
@@ -66,9 +101,6 @@ function onCommand(session, command) {
     case 'add a bot':
       displayAddBotInstructions(session);
       break;
-    case 'donate':
-      donate(session);
-      break;
     }
 };
 
@@ -85,7 +117,7 @@ function onPayment(session, message) {
     // handle payments sent to the bot
     if (message.status == 'unconfirmed') {
       // payment has been sent to the ethereum network, but is not yet confirmed
-      sendMessage(session, `Thanks for the payment! 🙏`);
+      sendMessage(session, `Thanks for the donation! 🙏`);
     } else if (message.status == 'confirmed') {
       // handle when the payment is actually confirmed!
     } else if (message.status == 'error') {
@@ -176,24 +208,13 @@ function fetchResigsteredBotByToshiId(bot_toshi_id)
   }).catch((err) => Logger.error(err));
 };
 
-function donate(session) {
-  // request $1 USD at current exchange rates
-  Fiat.fetch().then((toEth) => {
-    session.requestEth(toEth.USD(1));
-  });
-};
 
 // HELPERS
 
 function sendMessage(session, message) {
-  let controls =  [
-    {type: 'button', label: 'Show all bots', value: 'show all bots'},
-      {type: 'button', label: 'Add a bot', value: 'add a bot'},
-      {type: 'button', label: 'Donate', value: 'donate'}
-  ];
   session.reply(SOFA.Message({
     body: message,
-    controls: controls,
+    controls: DEFAULT_CONTROLS,
     showKeyboard: false,
   }));
 };
