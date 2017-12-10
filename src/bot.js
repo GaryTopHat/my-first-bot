@@ -133,9 +133,9 @@ function tryAddNewBot(session, message){
   let botUserName = message.body.trim().replace("@", "")
   let atBotUserName = "@" + botUserName 
 
-  IdService.getUser(botUserName).then((userFound) => {
-    let bot = userFound
-  }).catch((err) => Logger.error(err))
+  IdService.getUser(botUserName).then((bot) => {
+    //let bot = userFound
+  
 
   Logger.warning("Log start")
   Logger.warning(Object.getOwnPropertyNames(bot).toString())
@@ -155,6 +155,7 @@ function tryAddNewBot(session, message){
     else 
       sendMessage(session,  + "An error occurred while trying to find" + atBotUserName + ".")
   }
+}).catch((err) => Logger.error(err))
 }
 
 function fethResigsteredBotByToshiId(bot_toshi_id)
