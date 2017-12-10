@@ -103,13 +103,17 @@ function welcome(session) {
 function displayAllBots(session) {
   _bot.dbStore.fetchval("SELECT username FROM registered_bots").then((bots) => {
     // :bulb:
-    let msg = bots ? `Here is the list of all registered bots: ${bots}` : "The list is empty.";
+    let msg = bots ? "Here is the list of all registered bots:\n" + prettyPrintList(bots) : "The list is empty.";
 
     sendMessage(session, msg);
   }).catch((err) => {
     Logger.error(err);
   });
 };
+
+function prettyPrintList(bots){
+  return bots.join("\n");
+}
 
 function displayAddBotInstructions(session) {
   session.set('expected_user_input_type', "bot_username");
