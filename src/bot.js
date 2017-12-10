@@ -102,7 +102,11 @@ function welcome(session) {
 function dislayAllBots(session) {
   bot.dbStore.fetchval("SELECT toshi_id FROM registered_bots").then((bots) => {
     // :bulb:
-    let msg = `\uD83D\uDCA1 Here is the list of all registered bots: ${bots}`;
+
+    if(bots)
+      let msg = `Here is the list of all registered bots: ${bots}`;
+    else
+      let msg = "The list is empty.";
     sendMessage(session, msg);
   }).catch((err) => {
     Logger.error(err);
@@ -146,6 +150,8 @@ function tryAddNewBot(session, message){
 
 function insertNewBot(session, bot)
 {
+  Logger.info(Object.getOwnPropertyNames(bot.dbStore).toString());
+  
   bot.dbStore.execute("INSERT INTO registered_bots (toshi_id, entry_created_by, entry_modified_by) VALUES ($1, $2, $2) ", [bot.toshi_id, session.user.toshi_id])
   .then(() => {
 
@@ -157,8 +163,6 @@ function insertNewBot(session, bot)
 
 function fethResigsteredBotByToshiId(bot_toshi_id)
 {
-  Logger.info(Object.getOwnPropertyNames(bot.dbStore).toString());
-
   bot.dbStore.fetchrow("SELECT * FROM registered_bots where toshi_id = $1", [bot_toshi_id])
     .then((bot) => {
     return bot;
