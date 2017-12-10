@@ -112,7 +112,7 @@ function displayAllBots(session) {
 };
 
 function prettyPrintList(bots){
-  return bots.join("\n");
+  return bots.Map(bot => bot.toString()).join("\n");
 }
 
 function displayAddBotInstructions(session) {
