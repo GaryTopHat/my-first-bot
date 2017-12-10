@@ -103,8 +103,8 @@ function welcome(session) {
 function displayAllBots(session) {
   _bot.dbStore.fetch("SELECT username FROM registered_bots").then((bots) => {
     // :bulb:
-    Logger.info("What s in bots ##: " + bots.length.toString());
-    let msg = (bots && bots.length > 0) ? ("Here is the list of all registered bots:\n" + prettyPrintList(bots)) : "The list is empty.";
+
+    let msg = (bots && bots.length > 0) ? ("Here is the list of all registered bots:\n" + prettyPrintList(bots)) : "No bot listed yet. Maybe add one?";
 
     sendMessage(session, msg);
   }).catch((err) => {
