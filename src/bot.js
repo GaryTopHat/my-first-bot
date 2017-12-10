@@ -3,6 +3,7 @@ const SOFA = require('sofa-js')
 const Fiat = require('./lib/Fiat')
 const PsqlStore = require('./PsqlStore')
 const IdService = require('./lib/IdService')
+const Logger = require('./lib/Logger');
 
 let bot = new Bot()
 
