@@ -12,7 +12,7 @@ let _bot = new Bot();
 const FAQ = {
   'faq:about': {
     label: 'About',
-    message: `This bot is a list of bots on Toshi. Maintained by users like you, for users like you. To make the list as complete as possible, please add the bots you find! \ud83d\ude4b` // :raised_hand:
+    message: `This bot is a list of bots on Toshi. Maintained by users like you, for users like you.\nTo make the list as complete as possible, please add the bots you find! \ud83d\ude4b` // :raised_hand:
   },
   'faq:payment': {
     label: "Donations",
