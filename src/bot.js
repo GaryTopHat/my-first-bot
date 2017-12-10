@@ -51,7 +51,7 @@ _bot.onEvent = function(session, message) {
 
 function onMessage(session, message) {
 
-  if(session.get('expected_user_input_type') === "bot_username")
+  if(message.body.startWith("@"))
     tryAddNewBot(session, message);
   else 
     welcome(session);
@@ -116,8 +116,7 @@ function prettyPrintList(bots){
 }
 
 function displayAddBotInstructions(session) {
-  session.set('expected_user_input_type', "bot_username");
-  let msg = "Type the username of the bot you want to add (Make sure to use the username and not the display name).";
+  let msg = "Add a bot at anytime by typing the username of the bot, including the @ character (example: @ToshoBot).";
 
   session.reply(SOFA.Message({
     body: msg,
@@ -132,8 +131,7 @@ function displayAddBotInstructions(session) {
 //DB. Finally, we need to display a message to the user explaining what happened (the level of detail is yet
 //to be defined)
 function tryAddNewBot(session, message){
-  session.set('expected_user_input_type', null);
-   
+
   let botUserName = message.body.trim().replace("@", "");
   let atBotUserName = "@" + botUserName ;
 
