@@ -19,6 +19,13 @@ CREATE TABLE IF NOT EXISTS registered_bots (
 );
 `;
 
+bot.onReady = () => {
+  bot.dbStore = new PsqlStore(bot.client.config.storage.postgres.url, process.env.STAGE || 'development');
+  bot.dbStore.initialize(DATABASE_TABLES).then(() => {}).catch((err) => {
+    Logger.error(err);
+  });
+};
+
 // ROUTING
 
 bot.onEvent = function(session, message) {
@@ -86,13 +93,6 @@ function onPayment(session, message) {
   }
 }
 
-bot.onReady = () => {
-  bot.dbStore = new PsqlStore(bot.client.config.storage.postgres.url, process.env.STAGE || 'development');
-  bot.dbStore.initialize(DATABASE_TABLES).then(() => {}).catch((err) => {
-    Logger.error(err);
-  });
-};
-
 const DEFAULT_CONTROLS = [
 	{type: 'button', label: 'Show all bots', value: 'show all bots'},
     {type: 'button', label: 'Add a bot', value: 'add a bot'},
@@ -118,7 +118,7 @@ function dislayAllBots(session) {
 
 function displayAddBotInstructions(session) {
   session.set('expected_user_input_type', "bot_username")
-  let msg = "Type the username of the bot you want to add (Make sure to uer the username and not the display name)."
+  let msg = "Type the username of the bot you want to add (Make sure to use the username and not the display name)."
 
   session.reply(SOFA.Message({
     body: msg,
