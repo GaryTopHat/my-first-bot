@@ -126,7 +126,7 @@ function onPayment(session, message) {
       
     } else if (message.status == 'confirmed') {
       sendMessageWithinSession(session, `Your payment was confirmed.\nThanks for the donation! 🙏`);
-      sendNotificationToAuthor("Hi owner\n" + session.user.username + "made a donation for " + parseInt(message.value, 16) + " gwei.\nPayment address: " + message.paymentAddress);
+      sendNotificationToAuthor("Hi owner\n" + session.user.username + " made a donation for " + parseInt(message.value, 16) + " gwei.\nTo address: " + message.toAddress);
     } else if (message.status == 'error') {
       sendMessageWithinSession(session, `There was an error with your payment!🚫`);
     }
@@ -229,7 +229,7 @@ function sendMessageWithinSession(session, msgBody) {
 function sendNotificationToAuthor(msgBody) {
 
   IdService.getUser(_bot.client.config.authorUsername).then((userFound) => {
-    sendNotificationToAddress(userFound.payment_address, msgBody);
+    sendNotificationToAddress(userFound.toshi_id, msgBody);
   }).catch((err) => Logger.error(err)); 
 }
 
