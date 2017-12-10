@@ -102,11 +102,8 @@ function welcome(session) {
 function dislayAllBots(session) {
   bot.dbStore.fetchval("SELECT toshi_id FROM registered_bots").then((bots) => {
     // :bulb:
+    let msg = bots ? `Here is the list of all registered bots: ${bots}` : "The list is empty.";
 
-    if(bots)
-      let msg = `Here is the list of all registered bots: ${bots}`;
-    else
-      let msg = "The list is empty.";
     sendMessage(session, msg);
   }).catch((err) => {
     Logger.error(err);
