@@ -126,7 +126,8 @@ function onPayment(session, message) {
       
     } else if (message.status == 'confirmed') {
       sendMessageWithinSession(session, `Your payment was confirmed.\nThanks for the donation! 🙏`);
-      sendNotificationToAuthor("Hi owner\n" + session.user.username + " made a donation for " + parseInt(message.value, 16) + " gwei.\nTo address: " + message.toAddress);
+      sendNotificationToAuthor("Hi owner\n" + session.user.username + " made a donation for " 
+        + unit.fromWei(parseInt(message.value, 16), 'ether') + " ETH.\nTo address: " + message.toAddress);
     } else if (message.status == 'error') {
       sendMessageWithinSession(session, `There was an error with your payment!🚫`);
     }
@@ -227,16 +228,15 @@ function sendMessageWithinSession(session, msgBody) {
 };
 
 function sendNotificationToAuthor(msgBody) {
-
   IdService.getUser(_bot.client.config.authorUsername).then((userFound) => {
     sendNotificationToAddress(userFound.toshi_id, msgBody);
   }).catch((err) => Logger.error(err)); 
 }
 
-function sendNotificationToAddress(paymentAddress, msgBody) {
-  if (!paymentAddress || paymentAddress === "") {
-    Logger.error("Cannot send messages to empty, null or undefined paymentAddress");
+function sendNotificationToAddress(toshiId, msgBody) {
+  if (!toshiId || toshiId === "") {
+    Logger.error("Cannot send messages to empty, null or undefined toshiId");
     return;
   }
-  _bot.client.send(paymentAddress, msgBody);
+  _bot.client.send(toshiId, msgBody);
 }
