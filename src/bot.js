@@ -137,9 +137,9 @@ function tryAddNewBot(session, message){
     let bot = userFound
   }).catch((err) => Logger.error(err))
 
-  Logger.debug("Log start")
-  Logger.debug(bot.hasOwnProperty("errors"))
-  Logger.debug("Log end")
+  Logger.warning("Log start")
+  Logger.warning(bot.hasOwnProperty("errors"))
+  Logger.warning("Log end")
   //let bot = IdService.getUser(botUserName)
 
   if(!bot.hasOwnProperty("errors")){ 
