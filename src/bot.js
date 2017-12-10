@@ -153,7 +153,7 @@ function insertNewBot(session, newBot)
   _bot.dbStore.execute("INSERT INTO registered_bots (toshi_id, entry_created_by, entry_modified_by) VALUES ($1, $2, $2) ", [newBot.toshi_id, session.user.toshi_id])
   .then(() => {
 
-    sendMessage(session, "@" + newBot.userName + " was added to the list.")
+    sendMessage(session, "@" + newBot.username + " was added to the list.")
   }).catch((err) => {
     Logger.error(err);
   });
