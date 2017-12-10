@@ -10,6 +10,7 @@ let _bot = new Bot();
 const DATABASE_TABLES = `
 CREATE TABLE IF NOT EXISTS registered_bots (
     toshi_id VARCHAR PRIMARY KEY,
+    username VARCHAR UNIQUE,
     entry_created_on TIMESTAMP WITHOUT TIME ZONE DEFAULT (now() AT TIME ZONE 'utc'),
 	entry_created_by VARCHAR,
     entry_modified_on TIMESTAMP WITHOUT TIME ZONE DEFAULT (now() AT TIME ZONE 'utc'),
@@ -100,7 +101,7 @@ function welcome(session) {
 };
 
 function displayAllBots(session) {
-  _bot.dbStore.fetchval("SELECT toshi_id FROM registered_bots").then((bots) => {
+  _bot.dbStore.fetchval("SELECT username FROM registered_bots").then((bots) => {
     // :bulb:
     let msg = bots ? `Here is the list of all registered bots: ${bots}` : "The list is empty.";
 
@@ -121,6 +122,11 @@ function displayAddBotInstructions(session) {
   }));
 };
 
+//TODO: Handle the case where a user wants to add a bot that already exist in the db by username,
+//but with a different toshi_ID. In this case we need to try to add the old bot again - thus mapping it
+//to its new toshi_id if it exists. And then we need to assign the new username to the toshi_id already in the
+//DB. Finally, we need to display a message to the user explaining what happened (the level of detail is yet
+//to be defined)
 function tryAddNewBot(session, message){
   session.set('expected_user_input_type', null);
    
@@ -150,7 +156,7 @@ function tryAddNewBot(session, message){
 
 function insertNewBot(session, newBot)
 {
-  _bot.dbStore.execute("INSERT INTO registered_bots (toshi_id, entry_created_by, entry_modified_by) VALUES ($1, $2, $2) ", [newBot.toshi_id, session.user.toshi_id])
+  _bot.dbStore.execute("INSERT INTO registered_bots (toshi_id, username, entry_created_by, entry_modified_by) VALUES ($1, $2, $3, $3) ", [newBot.toshi_id, newBot.username, session.user.toshi_id])
   .then(() => {
 
     sendMessage(session, "@" + newBot.username + " was added to the list.")
