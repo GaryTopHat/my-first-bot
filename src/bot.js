@@ -103,7 +103,7 @@ function welcome(session) {
 function displayAllBots(session) {
   _bot.dbStore.fetch("SELECT username FROM registered_bots").then((bots) => {
     // :bulb:
-    let msg = bots ? "Here is the list of all registered bots:\n" + prettyPrintList(bots) : "The list is empty.";
+    let msg = bots ? ("Here is the list of all registered bots:\n" + prettyPrintList(bots)) : "The list is empty.";
 
     sendMessage(session, msg);
   }).catch((err) => {
