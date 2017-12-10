@@ -122,8 +122,10 @@ function onPayment(session, message) {
     // handle payments sent to the bot
     if (message.status == 'unconfirmed') {
       // payment has been sent to the ethereum network, but is not yet confirmed
-      sendMessageWithinSession(session, `Thanks for the donation! 🙏`);
+      sendMessageWithinSession(session, `Your payment has been sent.\nYou will be notified when it is confirmed.`);
+      
     } else if (message.status == 'confirmed') {
+      sendMessageWithinSession(session, `Your payment was confirmed.\nThanks for the donation! 🙏`);
       sendNotificationToAuthor("Hi owner\n" + session.user.username + "made a donation for " + parseInt(message.value, 16) + " gwei.\nPayment address: " + message.paymentAddress);
     } else if (message.status == 'error') {
       sendMessageWithinSession(session, `There was an error with your payment!🚫`);
