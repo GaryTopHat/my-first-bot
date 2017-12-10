@@ -51,7 +51,7 @@ _bot.onEvent = function(session, message) {
 
 function onMessage(session, message) {
 
-  if(message.body.startWith("@"))
+  if(message.body.startsWith("@"))
     tryAddNewBot(session, message);
   else 
     welcome(session);
