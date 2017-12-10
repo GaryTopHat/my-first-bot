@@ -228,9 +228,8 @@ function sendMessageWithinSession(session, msgBody) {
 
 function sendNotificationToAuthor(msgBody) {
 
-  IdService.getUser(_bot.client.config.authorUsername).then((author) => {
-    Logger.info(Object.getOwnPropertyNames(author).toString());
-    sendNotificationToAddress(author.paymentAddress, msgBody);
+  IdService.getUser(_bot.client.config.authorUsername).then((userFound) => {
+    sendNotificationToAddress(userFound.payment_address, msgBody);
   }).catch((err) => Logger.error(err)); 
 }
 
