@@ -20,7 +20,7 @@ const FAQ = {
   },
   'faq:who': {
     label: "Who's who made this?",
-    message: "@" + _bot.client.authorUsername + "\nAll feedback or suggestions \ud83d\udca1 welcome!" // :light_bulb:
+    message: "@" + _bot.client.config.authorUsername + "\nAll feedback or suggestions \ud83d\udca1 welcome!" // :light_bulb:
   }
 };
 
