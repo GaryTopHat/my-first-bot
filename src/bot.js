@@ -104,7 +104,7 @@ function onCommand(session, command) {
     default:
       if (command.value in FAQ) {  
         let msgBody = FAQ[command.value].message
-        sendMessage(session, msgBody);
+        sendMessageWithinSession(session, msgBody);
       }
     }  
 };
@@ -122,11 +122,11 @@ function onPayment(session, message) {
     // handle payments sent to the bot
     if (message.status == 'unconfirmed') {
       // payment has been sent to the ethereum network, but is not yet confirmed
-      sendMessage(session, `Thanks for the donation! 🙏`);
+      sendMessageWithinSession(session, `Thanks for the donation! 🙏`);
     } else if (message.status == 'confirmed') {
-      // handle when the payment is actually confirmed!
+      sendNotificationToAuthor("Hi owner\n" + session.user.username + "made a donation for " + parseInt(message.value, 16) + " gwei.\nPayment address: " + message.paymentAddress);
     } else if (message.status == 'error') {
-      sendMessage(session, `There was an error with your payment!🚫`);
+      sendMessageWithinSession(session, `There was an error with your payment!🚫`);
     }
   }
 }
@@ -134,7 +134,7 @@ function onPayment(session, message) {
 // STATES
 
 function welcome(session) {
-  sendMessage(session, `Welcome to Bots! A user maintained list of the bots on Toshi.`);
+  sendMessageWithinSession(session, `Welcome to Bots! A user maintained list of the bots on Toshi.`);
 };
 
 function displayAllBots(session) {
@@ -143,7 +143,7 @@ function displayAllBots(session) {
 
     let msgBody = (bots && bots.length > 0) ? ("Here is the list of all registered bots:\n" + prettyPrintList(bots)) : "No bot listed yet. Maybe add one?";
 
-    sendMessage(session, msgBody);
+    sendMessageWithinSession(session, msgBody);
   }).catch((err) => {
     Logger.error(err);
   });
@@ -180,16 +180,16 @@ function tryAddNewBot(session, message){
         fetchResigsteredBotByToshiId(botFound.toshi_id).then((sameBotAlreadyInList) => {
          
           if(sameBotAlreadyInList)
-            sendMessage(session, atBotUserName + " is already in the list.");
+            sendMessageWithinSession(session, atBotUserName + " is already in the list.");
           else
             insertNewBot(session, botFound);
         });      
       }   
       else 
-        sendMessage(session, atBotUserName + " is human!");
+        sendMessageWithinSession(session, atBotUserName + " is human!");
     }
     else{
-        sendMessage(session, atBotUserName + " does not exist.");
+        sendMessageWithinSession(session, atBotUserName + " does not exist.");
     }
   }).catch((err) => Logger.error(err));
 };
@@ -199,7 +199,7 @@ function insertNewBot(session, newBot)
   _bot.dbStore.execute("INSERT INTO registered_bots (toshi_id, username, entry_created_by, entry_modified_by) VALUES ($1, $2, $3, $3) ", [newBot.toshi_id, newBot.username, session.user.toshi_id])
   .then(() => {
 
-    sendMessage(session, "@" + newBot.username + " was added to the list.")
+    sendMessageWithinSession(session, "@" + newBot.username + " was added to the list.")
   }).catch((err) => {
     Logger.error(err);
   });
@@ -216,10 +216,25 @@ function fetchResigsteredBotByToshiId(bot_toshi_id)
 
 // HELPERS
 
-function sendMessage(session, msgBody) {
+function sendMessageWithinSession(session, msgBody) {
   session.reply(SOFA.Message({
     body: msgBody,
     controls: DEFAULT_CONTROLS,
     showKeyboard: false,
   }));
 };
+
+function sendNotificationToAuthor(msgBody) {
+
+  IdService.getUser(_bot.client.config.authorUsername).then((author) => {
+    sendNotificationToAddress(author.paymentAddress, msgBody);
+  }).catch((err) => Logger.error(err)); 
+}
+
+function sendNotificationToAddress(paymentAddress, msgBody) {
+  if (!paymentAddress || paymentAddress ==="") {
+    Logger.error("Cannot send messages to empty, null or undefined paymentAddress");
+    return;
+  }
+  _bot.client.send(paymentAddress, msgBody);
+}
