@@ -5,7 +5,7 @@ const PsqlStore = require('./PsqlStore');
 const IdService = require('./lib/IdService');
 const Logger = require('./lib/Logger');
 
-let bot = new Bot();
+let _bot = new Bot();
 
 const DATABASE_TABLES = `
 CREATE TABLE IF NOT EXISTS registered_bots (
@@ -19,17 +19,17 @@ CREATE TABLE IF NOT EXISTS registered_bots (
 );
 `;
 
-bot.onReady = () => {
+_bot.onReady = () => {
   Logger.info("Executing on Ready NOW");
-  bot.dbStore = new PsqlStore(bot.client.config.storage.postgres.url, process.env.STAGE || 'development');
-  bot.dbStore.initialize(DATABASE_TABLES).then(() => {}).catch((err) => {
+  _bot.dbStore = new PsqlStore(_bot.client.config.storage.postgres.url, process.env.STAGE || 'development');
+  _bot.dbStore.initialize(DATABASE_TABLES).then(() => {}).catch((err) => {
     Logger.error(err);
   });
 };
 
 // ROUTING
 
-bot.onEvent = function(session, message) {
+_bot.onEvent = function(session, message) {
   switch (message.type) {
     case 'Init':
       welcome(session);
@@ -128,14 +128,14 @@ function tryAddNewBot(session, message){
   let botUserName = message.body.trim().replace("@", "");
   let atBotUserName = "@" + botUserName ;
 
-  IdService.getUser(botUserName).then((bot) => {
+  IdService.getUser(botUserName).then((botFound) => {
 
-    if(bot){ 
-      if(bot.is_app){
-        if(fethResigsteredBotByToshiId(bot.toshi_id))
+    if(botFound){ 
+      if(botFound.is_app){
+        if(fethResigsteredBotByToshiId(botFound.toshi_id))
           sendMessage(session, atBotUserName + " is already in the list.");
         else
-          insertNewBot(session);
+          insertNewBot(session, botFound);
       }   
       else 
         sendMessage(session, atBotUserName + " is human!");
@@ -146,14 +146,12 @@ function tryAddNewBot(session, message){
   }).catch((err) => Logger.error(err));
 };
 
-function insertNewBot(session)
+function insertNewBot(session, newBot)
 {
-  Logger.info(Object.getOwnPropertyNames(bot.dbStore).toString());
-  
-  bot.dbStore.execute("INSERT INTO registered_bots (toshi_id, entry_created_by, entry_modified_by) VALUES ($1, $2, $2) ", [bot.toshi_id, session.user.toshi_id])
+  _bot.dbStore.execute("INSERT INTO registered_bots (toshi_id, entry_created_by, entry_modified_by) VALUES ($1, $2, $2) ", [newBot.toshi_id, session.user.toshi_id])
   .then(() => {
 
-    sendMessage(session, "@" + bot.userName + " was added to the list.")
+    sendMessage(session, "@" + newBot.userName + " was added to the list.")
   }).catch((err) => {
     Logger.error(err);
   });
@@ -161,9 +159,9 @@ function insertNewBot(session)
 
 function fethResigsteredBotByToshiId(bot_toshi_id)
 {
-  bot.dbStore.fetchrow("SELECT * FROM registered_bots where toshi_id = $1", [bot_toshi_id])
-    .then((bot) => {
-    return bot;
+  _bot.dbStore.fetchrow("SELECT * FROM registered_bots where toshi_id = $1", [bot_toshi_id])
+    .then((botFound) => {
+    return botFound;
   }).catch((err) => Logger.error(err));
 };
 
