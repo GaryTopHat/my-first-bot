@@ -19,7 +19,7 @@ const FAQ = {
     message: `Feel free to send any amount to this bot as a donation. 🙏` // :folded_hands:
   },
   'faq:who': {
-    label: "Who's who made this?",
+    label: "Who made this bot?",
     message: "@" + _bot.client.config.authorUsername + "\nAll feedback or suggestions \ud83d\udca1 welcome!" // :light_bulb:
   }
 };
