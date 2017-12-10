@@ -135,7 +135,7 @@ function tryAddNewBot(session, message){
         if(fethResigsteredBotByToshiId(bot.toshi_id))
           sendMessage(session, atBotUserName + " is already in the list.");
         else
-          insertNewBot(session, bot);
+          insertNewBot(session);
       }   
       else 
         sendMessage(session, atBotUserName + " is human!");
@@ -146,7 +146,7 @@ function tryAddNewBot(session, message){
   }).catch((err) => Logger.error(err));
 };
 
-function insertNewBot(session, bot)
+function insertNewBot(session)
 {
   Logger.info(Object.getOwnPropertyNames(bot.dbStore).toString());
   
