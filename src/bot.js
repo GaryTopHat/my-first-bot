@@ -127,7 +127,7 @@ function onPayment(session, message) {
       
     } else if (message.status == 'confirmed') {
       sendMessageWithinSession(session, `Your payment was confirmed.\nThanks for the donation! 🙏`);
-      sendNotificationToAuthor("Hi owner\n" + session.user.username + " made a donation for " 
+      sendNotificationToAuthor("Hi owner,\n" + session.user.username + " made a donation for " 
         + unit.fromWei(message.value, 'ether') + " ETH.\nTo address: " + message.toAddress);
     } else if (message.status == 'error') {
       sendMessageWithinSession(session, `There was an error with your payment!🚫`);
