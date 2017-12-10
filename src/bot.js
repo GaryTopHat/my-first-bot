@@ -11,16 +11,15 @@ const DATABASE_TABLES = `
 CREATE TABLE IF NOT EXISTS registered_bots (
     toshi_id VARCHAR PRIMARY KEY,
     entry_created_on TIMESTAMP WITHOUT TIME ZONE DEFAULT (now() AT TIME ZONE 'utc'),
-	entry_created_by VARCHAR PRIMARY KEY,
+	entry_created_by VARCHAR,
     entry_modified_on TIMESTAMP WITHOUT TIME ZONE DEFAULT (now() AT TIME ZONE 'utc'),
-	entry_modified_by VARCHAR PRIMARY KEY,
+	entry_modified_by VARCHAR,
     is_online BOOLEAN DEFAULT TRUE,
 	is_working_properly BOOLEAN DEFAULT TRUE
 );
 `;
 
 bot.onReady = () => {
-  Logger.info("THIS IS On ready");
   bot.dbStore = new PsqlStore(bot.client.config.storage.postgres.url, process.env.STAGE || 'development');
   bot.dbStore.initialize(DATABASE_TABLES).then(() => {}).catch((err) => {
     Logger.error(err);
