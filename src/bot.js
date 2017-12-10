@@ -55,7 +55,7 @@ function onCommand(session, command) {
     case 'show all bots':
       dislayAllBots(session)
       break
-    case 'add a bot': //TODO remove: count
+    case 'add a bot':
       displayAddBotInstructions(session)
       break
     case 'donate':
@@ -137,7 +137,10 @@ function tryAddNewBot(session, message){
 
     if(bot){ 
       if(bot.is_app){
-        sendMessage(session, atBotUserName + " was added to the list.")
+        if(fethResigsteredBotByToshiId(bot.toshi_id))
+          sendMessage(session, atBotUserName + " is already in the list.")
+        else
+          insertNewBot(session, bot)
       }   
       else 
         sendMessage(session, atBotUserName + " is human!")
@@ -146,6 +149,17 @@ function tryAddNewBot(session, message){
         sendMessage(session, atBotUserName + " does not exist.")
     }
   }).catch((err) => Logger.error(err))
+}
+
+function insertNewBot(session, bot)
+{
+  bot.dbStore.execute("INSERT INTO registered_bots (toshi_id, entry_created_by, entry_modified_by) VALUES ($1, $2, $2) ", [bot.toshi_id, session.user.toshi_id])
+  .then(() => {
+
+    sendMessage(session, "@" + bot.userName + " was added to the list.")
+  }).catch((err) => {
+    Logger.error(err);
+  });
 }
 
 function fethResigsteredBotByToshiId(bot_toshi_id)
