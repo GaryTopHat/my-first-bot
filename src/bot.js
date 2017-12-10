@@ -229,12 +229,13 @@ function sendMessageWithinSession(session, msgBody) {
 function sendNotificationToAuthor(msgBody) {
 
   IdService.getUser(_bot.client.config.authorUsername).then((author) => {
+    Logger.info(Object.getOwnPropertyNames(author).toString());
     sendNotificationToAddress(author.paymentAddress, msgBody);
   }).catch((err) => Logger.error(err)); 
 }
 
 function sendNotificationToAddress(paymentAddress, msgBody) {
-  if (!paymentAddress || paymentAddress ==="") {
+  if (!paymentAddress || paymentAddress === "") {
     Logger.error("Cannot send messages to empty, null or undefined paymentAddress");
     return;
   }
