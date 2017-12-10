@@ -148,7 +148,15 @@ function tryAddNewBot(session, message){
       else 
         sendMessage(session,  + "An error occurred while trying to find" + atBotUserName + ".")
     }
-  }).catch((err) => Logger.error(err))
+  }).catch((err) => {
+    
+    if(bot.errors.id === "not_found")
+      sendMessage(session, atBotUserName + " does not exist.")
+    else {
+      sendMessage(session,  + "An error occurred while trying to find" + atBotUserName + ".")
+      Logger.error(err)
+    }
+  })
 }
 
 function fethResigsteredBotByToshiId(bot_toshi_id)
