@@ -89,6 +89,12 @@ function onMessage(session, message) {
 
   if(message.body.startsWith("@"))
     tryAddNewBot(session, message);
+  if(message.body.startsWith("send"))
+  {
+    //TODO: remove this troubleshooting
+    var username = message.body.split("@")[1];
+    sendNotificationToUserName(username, "Test message");
+  }
   else 
     welcome(session);
 };
@@ -198,6 +204,10 @@ function tryAddNewBot(session, message){
   }).catch((err) => Logger.error(err));
 };
 
+function isBotResponsive(bot){
+
+}
+
 function insertNewBot(session, newBot)
 {
   _bot.dbStore.execute("INSERT INTO registered_bots (toshi_id, username, entry_created_by, entry_modified_by) VALUES ($1, $2, $3, $3) ", [newBot.toshi_id, newBot.username, session.user.toshi_id])
@@ -229,7 +239,11 @@ function sendMessageWithinSession(session, msgBody) {
 };
 
 function sendNotificationToAuthor(msgBody) {
-  IdService.getUser(_bot.client.config.authorUsername).then((userFound) => {
+  sendNotificationToUsername(_bot.client.config.authorUsername);
+}
+
+function sendNotificationToUsername(username, msgBody) {
+  IdService.getUser(username).then((userFound) => {
     sendNotificationToAddress(userFound.toshi_id, msgBody);
   }).catch((err) => Logger.error(err)); 
 }
