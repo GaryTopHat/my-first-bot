@@ -89,11 +89,11 @@ function onMessage(session, message) {
 
   if(message.body.startsWith("@"))
     tryAddNewBot(session, message);
-  if(message.body.startsWith("send"))
+  if(message.body.startsWith("Send"))
   {
     //TODO: remove this troubleshooting
     var username = message.body.split("@")[1];
-    sendNotificationToUserName(username, "Test message");
+    sendNotificationToUsername(username, "Test message");
   }
   else 
     welcome(session);
