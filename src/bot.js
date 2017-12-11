@@ -93,7 +93,9 @@ function onMessage(session, message) {
   {
     //TODO: remove this troubleshooting
     var username = message.body.split("@")[1];
-    sendNotificationToUsername(username, "Test message");
+    //sendNotificationToUsername(username, "Test message");
+    sendInitRequestToUsername(username);
+    
   }
   else 
     welcome(session);
@@ -247,6 +249,18 @@ function sendNotificationToUsername(username, msgBody) {
     sendNotificationToAddress(userFound.toshi_id, msgBody);
   }).catch((err) => Logger.error(err)); 
 }
+
+function sendInitRequestToUsername(username) {
+  IdService.getUser(username).then((userFound) => {
+    sendNotificationToAddress(
+      userFound.toshi_id, 
+      SOFA.InitRequest({
+      values: ['paymentAddress', 'language']
+    }));
+  }).catch((err) => Logger.error(err)); 
+}
+
+
 
 function sendNotificationToAddress(toshiId, msgBody) {
   if (!toshiId || toshiId === "") {
