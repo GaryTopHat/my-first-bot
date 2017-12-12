@@ -234,7 +234,7 @@ function sendMessageWithinSession(session, msgBody) {
 };
 
 function sendNotificationToAuthor(msgBody) {
-  sendNotificationToUsername(_bot.client.config.authorUsername);
+  sendNotificationToUsername(_bot.client.config.authorUsername, msgBody);
 }
 
 function sendNotificationToUsername(username, msgBody) {
