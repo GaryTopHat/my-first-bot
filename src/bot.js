@@ -66,6 +66,11 @@ _bot.onReady = () => {
 // ROUTING
 
 _bot.onEvent = function(session, message) {
+
+  if (session.user.is_app) {
+    return;  //Prevent spamming from other bots
+  }
+
   switch (message.type) {
     case 'Init':
       welcome(session);
