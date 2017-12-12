@@ -89,14 +89,6 @@ function onMessage(session, message) {
 
   if(message.body.startsWith("@"))
     tryAddNewBot(session, message);
-  if(message.body.startsWith("Send"))
-  {
-    //TODO: remove this troubleshooting
-    var username = message.body.split("@")[1];
-    //sendNotificationToUsername(username, "Test message");
-    sendInitRequestToUsername(username);
-    
-  }
   else 
     welcome(session);
 };
@@ -151,9 +143,8 @@ function welcome(session) {
 
 function displayAllBots(session) {
   _bot.dbStore.fetch("SELECT username FROM registered_bots").then((bots) => {
-    // :bulb:
 
-    let msgBody = (bots && bots.length > 0) ? ("Here is the list of all registered bots:\n" + prettyPrintList(bots)) : "No bot listed yet. Maybe add one?";
+    let msgBody = (bots && bots.length > 0) ? (prettyPrintList(bots) + "\n Tap on the name of the bot you want to speak to.") : "No bot listed yet. Maybe add one?";
 
     sendMessageWithinSession(session, msgBody);
   }).catch((err) => {
@@ -206,9 +197,6 @@ function tryAddNewBot(session, message){
   }).catch((err) => Logger.error(err));
 };
 
-function isBotResponsive(bot){
-
-}
 
 function insertNewBot(session, newBot)
 {
@@ -249,17 +237,6 @@ function sendNotificationToUsername(username, msgBody) {
     sendNotificationToAddress(userFound.toshi_id, msgBody);
   }).catch((err) => Logger.error(err)); 
 }
-
-function sendInitRequestToUsername(username) {
-  IdService.getUser(username).then((userFound) => {
-    sendNotificationToAddress(
-      userFound.toshi_id, 
-      SOFA.InitRequest({
-      values: ['paymentAddress', 'language']
-    }));
-  }).catch((err) => Logger.error(err)); 
-}
-
 
 
 function sendNotificationToAddress(toshiId, msgBody) {
