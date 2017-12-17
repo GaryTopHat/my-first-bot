@@ -149,7 +149,7 @@ function welcome(session) {
 function displayAllBots(session) {
   _bot.dbStore.fetch("SELECT username FROM registered_bots").then((bots) => {
 
-    let msgBody = (bots && bots.length > 0) ? (prettyPrintList(bots) + "\n Tap on the name of the bot you want to speak to.") : "No bot listed yet. Maybe add one?";
+    let msgBody = (bots && bots.length > 0) ? ("Here is the list of all registered bots:\n" + prettyPrintList(bots)) : "No bot listed yet. Maybe add one?";
 
     sendMessageWithinSession(session, msgBody);
   }).catch((err) => {
