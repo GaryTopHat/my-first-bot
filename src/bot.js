@@ -163,7 +163,7 @@ function prettyPrintList(bots){
 
 function getFlags(bot){
   show_new_for_days = 7;
-  if(isBotNew)
+  if(isBotNew(bot))
     return '   \ud83c\udd95';   //Word "NEW" in a blue square
   else
   return '';
