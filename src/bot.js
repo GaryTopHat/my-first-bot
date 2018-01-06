@@ -162,10 +162,10 @@ function prettyPrintList(bots){
 }
 
 function isNewBotFlag(bot){
-  if(bot.entry_created_on < Date.now() + (1000 * 60 * 1))
+  if(false) //bot.entry_created_on < Date.now() + (1000 * 60 * 1))
     return '   NEW';
   else
-  return '';
+  return bot.entry_created_on + '    ' +  Date.now() + (1000 * 60 * 1);
 }
 
 function displayAddBotInstructions(session) {
