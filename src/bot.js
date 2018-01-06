@@ -162,7 +162,7 @@ function prettyPrintList(bots){
 }
 
 function isNewBotFlag(bot){
-  if(false) //bot.entry_created_on < Date.now() + (1000 * 60 * 1))
+  if(bot.entry_created_on < Date.now() + (1000 * 60 * 60))
     return '   NEW';
   else
   return bot.entry_created_on + '    ' +  Date.now() + (1000 * 60 * 1);
