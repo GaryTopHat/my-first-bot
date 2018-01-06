@@ -162,8 +162,8 @@ function prettyPrintList(bots){
 }
 
 function isNewBotFlag(bot){
-  if(false) //Date.parse(bot.entry_created_on) < Date.now() + (1000 * 60 * 120))
-    return '   NEW';
+  if(Date.parse(bot.entry_created_on) > Date.now() - (1000 * 60 * 60 * 3))
+    return '   \ud83c\udd95';
   else
   return Date.parse(bot.entry_created_on) + '    ' +  Date.now() + (1000 * 60 * 1);
 }
