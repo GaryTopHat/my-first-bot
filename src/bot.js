@@ -158,14 +158,20 @@ function displayAllBots(session) {
 };
 
 function prettyPrintList(bots){
-  return bots.map(bot => "@" + bot.username + isNewBotFlag(bot)).sort().join("\n");
+  return bots.map(bot => "@" + bot.username + getFlags(bot)).sort().join("\n");
 }
 
-function isNewBotFlag(bot){
-  if(Date.parse(bot.entry_created_on) > Date.now() - (1000 * 60 * 60 * 3))
-    return '   \ud83c\udd95';
+function getFlags(bot){
+  show_new_for_days = 7;
+  if(isBotNew)
+    return '   \ud83c\udd95';   //Word "NEW" in a blue square
   else
-  return Date.parse(bot.entry_created_on) + '    ' +  Date.now() + (1000 * 60 * 1);
+  return '';
+}
+
+function isBotNew(bot){
+  show_new_for_days = 7;
+  return (Date.parse(bot.entry_created_on) > Date.now() - (1000 * 60 * 60 * 24 * show_new_for_days));
 }
 
 function displayAddBotInstructions(session) {
