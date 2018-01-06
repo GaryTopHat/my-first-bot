@@ -158,7 +158,14 @@ function displayAllBots(session) {
 };
 
 function prettyPrintList(bots){
-  return bots.map(bot => "@" + bot.username).sort().join("\n");
+  return bots.map(bot => "@" + bot.username + isNewBotFlag(bot)).sort().join("\n");
+}
+
+function isNewBotFlag(bot){
+  if(bot.entry_created_on < Date.now() + (1000 * 60 * 1))
+    return '   NEW';
+  else
+  return '';
 }
 
 function displayAddBotInstructions(session) {
