@@ -125,6 +125,7 @@ function updateResgisteredBotsData(session){
     var toshi_ids = bots.map(bot => bot.toshi_id);
     var usernames = bots.map(bot => bot.username);
     Logger.info(toshi_ids.toString());
+    Logger.info(usernames.toString());
     IdService.getUsers(toshi_ids).then((botsFound) => {
 
       if(botsFound){ 
