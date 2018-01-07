@@ -48,6 +48,21 @@ class IdServiceClient {
     });
   }
 
+  getUsers(token_ids) {
+
+    query = token_ids.map(id => 'toshi_id=' + id).toString().replace(',', '&');
+
+    return fetch({
+      url: this._getUrl('/v1/search/user?' + query),
+      json: true
+    }).then((results) => {
+      return results;
+    }).catch((err) => {
+      Logger.error(err);
+      return null;
+    });
+  }
+
   paymentAddressReverseLookup(address) {
     if (cached_users_pa[address] && cache_is_valid(cached_users_pa[address].timestamp)) {
       return Promise.resolve(cached_users_pa[address].user);

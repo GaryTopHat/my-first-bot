@@ -104,6 +104,26 @@ function onMessage(session, message) {
 
   if(message.body.startsWith("@"))
     tryAddNewBot(session, message);
+  else if(message.body === 'test'){ //TODO: remove
+    _bot.dbStore.fetch("SELECT toshi_id FROM registered_bots").then((bots) => {
+      token_ids = bots.map(bot => bot.toshi_id);
+
+      IdService.getUsers(token_ids).then((botsFound) => {
+
+        if(botsFound){ 
+          let msgBody = botsFound[0].username;
+          sendMessageWithinSession(session, msgBody);      
+        }
+        else{
+            sendMessageWithinSession(session, "Bots not found");
+        }
+      }).catch((err) => Logger.error(err));
+
+      
+    }).catch((err) => {
+      Logger.error(err);
+    });
+  } 
   else 
     welcome(session);
 };
@@ -171,14 +191,15 @@ function prettyPrintList(bots){
   return bots.map(bot => "@" + bot.username + getFlags(bot)).sort().join("\n");
 }
 
-function getFlags(bot){
-  show_new_for_days = 7;
+function getFlags(bot){  
   flag_separator = '   ';
   flags = '';
+  flags = flags + flag_separator + bot.reputation_score;
+
+  show_new_for_days = 7;
   if(isBotNew(bot))
     flags = flags + flag_separator + '\ud83c\udd95';   //Word "NEW" in a blue square
-
-  flags = flags + flag_separator + bot.reputation_score;
+  
   return flags;
 }
 
