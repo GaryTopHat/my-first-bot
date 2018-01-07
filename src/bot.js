@@ -7,7 +7,7 @@ const Logger = require('./lib/Logger');
 const unit = require('ethjs-unit');
 
 let _bot = new Bot();
-
+var _lastDataUpdateDate;
 // CONTROLS
 
 const FAQ = {
@@ -64,6 +64,7 @@ ALTER TABLE registered_bots ADD COLUMN IF NOT EXISTS review_count decimal NULL;
 `;
 
 _bot.onReady = () => {
+  _lastDataUpdateDate = Date.now();
   _bot.dbStore = new PsqlStore(_bot.client.config.storage.postgres.url, process.env.STAGE || 'development');
   _bot.dbStore.initialize(DATABASE_TABLES).then(() => {}).catch((err) => {
     Logger.error(err);
@@ -76,6 +77,13 @@ _bot.onEvent = function(session, message) {
 
   if (session.user.is_app) {
     return;  //Prevent spamming from other bots
+  }
+
+  var dataRefreshIntervalHours = 5;
+  var now = Date.now();
+  if(!_lastDataUpdateDate || now - _lastDataUpdateDate > (1000 * 60 *  dataRefreshIntervalHours)){
+    updateResgisteredBotsData(session);
+    _lastDataUpdateDate = now;
   }
 
   switch (message.type) {
@@ -101,17 +109,12 @@ function onMessage(session, message) {
 
   if(message.body.startsWith("@"))
     tryAddNewBot(session, message);
-  else if(message.body === 'Test'){ //TODO: remove when the toshi API is fixed (i.e.: allows to query specific users by toshi_id)
-    getLatestResgisteredBotsData(session);
-  } 
   else 
     welcome(session);
 };
 
-//TODO: Evenutally, I wnt to use this method to update reputation data in the DB
-// But for now the toshi API does not let me query just the users (bots) I want.
-// Instead, it returns all users. When they fix the problem, come back to this method
-function getLatestResgisteredBotsData(session){
+
+function updateResgisteredBotsData(session){
   _bot.dbStore.fetch("SELECT toshi_id FROM registered_bots").then((bots) => {
     var toshi_ids = bots.map(bot => bot.toshi_id);
 
