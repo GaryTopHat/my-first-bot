@@ -113,16 +113,16 @@ function onMessage(session, message) {
 // Instead, it returns all users. When they fix the problem, come back to this method
 function getLatestResgisteredBotsData(session){
   _bot.dbStore.fetch("SELECT toshi_id FROM registered_bots").then((bots) => {
-    var token_ids = bots.map(bot => bot.toshi_id);
+    var toshi_ids = bots.map(bot => bot.toshi_id);
 
-    IdService.getUsers(token_ids).then((botsFound) => {
+    IdService.getUsers(toshi_ids).then((botsFound) => {
 
       if(botsFound){ 
-        let msgBody = "First user returned: " + botsFound.results[0].username;
-        sendMessageWithinSession(session, msgBody);      
+        botsFound.results.filter(bot => toshi_ids.indexOf(bot.toshi_id)).map(bot => updateBot(session, bot));
+          
       }
       else{
-          sendMessageWithinSession(session, "Bots not found");
+          Logger.info(session, "No bot found to update");
       }
     }).catch((err) => Logger.error(err));
 
@@ -259,6 +259,18 @@ function insertNewBot(session, newBot)
   .then(() => {
 
     sendMessageWithinSession(session, "@" + newBot.username + " was added to the list.")
+  }).catch((err) => {
+    Logger.error(err);
+  });
+};
+
+function updateBot(session, bot)
+{
+  _bot.dbStore.execute("UPDATE registered_bots SET (entry_modified_by='$1', entry_modified_on=$2, reputation_score=$3, average_rating=$4, review_count=$5) WHERE toshi_id='$6'", 
+  [session.user.toshi_id, Date.now, bot.reputation_score, bot.average_rating, bot.review_count, bot.toshi_id,])
+  .then(() => {
+
+    Logger.error("Successfuly updated @" + bot.username)
   }).catch((err) => {
     Logger.error(err);
   });

@@ -49,13 +49,13 @@ class IdServiceClient {
   }
 
   //TODO: Due to a bug in the Toshi API, this returns all existing users instead of just the ones we want
-  //When they fix the bug, test the function and remove this comment
+  //When they fix the bug by adding the query variable to the URL, test the function and remove this comment
   getUsers(token_ids) {
 
     var query = token_ids.map(id => 'toshi_id=' + id).toString().replace(',', '&');
 
     return fetch({
-      url: this._getUrl('/v1/search/user?' + query),
+      url: this._getUrl('/v1/search/user/?apps=true&limit=1000'),
       json: true
     }).then((response) => {
       return response;
