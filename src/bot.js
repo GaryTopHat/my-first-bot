@@ -196,7 +196,7 @@ function prettyPrintList(bots){
 
 function getFlags(bot){  
   flag_separator = '   ';
-  flags = flag_separator + bot.reputation_score;
+  flags = flag_separator + prettyPrintReputationScore(bot.reputation_score);
   
   show_new_for_days = 7;
   if(isBotNew(bot))
@@ -205,6 +205,14 @@ function getFlags(bot){
   return flags;
 }
 
+function prettyPrintReputationScore(score)
+{
+  if(score === null)
+    return "No rating yet";
+  else
+    return '\u2b50'.repeat(Math.round(score)); //Stars
+
+}
 function isBotNew(bot){
   show_new_for_days = 7;
   return (Date.parse(bot.entry_created_on) > Date.now() - (1000 * 60 * 60 * 24 * show_new_for_days));
