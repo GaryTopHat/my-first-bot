@@ -251,11 +251,8 @@ function tryAddNewBot(session, message){
          
           if(sameBotAlreadyInList)
             sendMessageWithinSession(session, atBotUserName + " is already in the list.");
-          else{
+          else
             insertNewBot(session, botFound);
-            updateResgisteredBotsData(session);
-            _lastDataUpdateDate = Date.now();
-          }
         });      
       }   
       else 
