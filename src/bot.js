@@ -52,8 +52,14 @@ CREATE TABLE IF NOT EXISTS registered_bots (
     entry_modified_on TIMESTAMP WITHOUT TIME ZONE DEFAULT (now() AT TIME ZONE 'utc'),
 	entry_modified_by VARCHAR,
     is_online BOOLEAN DEFAULT TRUE,
-	is_working_properly BOOLEAN DEFAULT TRUE
+  is_working_properly BOOLEAN DEFAULT TRUE,
+  reputation_score integer NULL,
+  average_rating integer NULL,
+  review_count integer NULL
 );
+ALTER TABLE registered_bots ADD COLUMN IF NOT EXISTS reputation_score integer NULL;
+ALTER TABLE registered_bots ADD COLUMN IF NOT EXISTS average_rating integer NULL;
+ALTER TABLE registered_bots ADD COLUMN IF NOT EXISTS review_count integer NULL;
 `;
 
 _bot.onReady = () => {
