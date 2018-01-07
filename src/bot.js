@@ -269,7 +269,7 @@ function updateBot(session, bot)
   //sendMessageWithinSession(session, Date.now().toString() + '    ' + Date.now())
   //Logger.info(Date.now().toString() + '    ' + Date.now());
   _bot.dbStore.execute("UPDATE registered_bots SET entry_modified_by=$1, entry_modified_on=$2, reputation_score=$3, average_rating=$4, review_count=$5 WHERE toshi_id=$6", 
-  [session.user.toshi_id, Date.now(), bot.reputation_score, bot.average_rating, bot.review_count, bot.toshi_id,])
+  [session.user.toshi_id, Date.now().toUTCString(), bot.reputation_score, bot.average_rating, bot.review_count, bot.toshi_id,])
   .then(() => {
 
     Logger.info("Successfuly updated @" + bot.username);
