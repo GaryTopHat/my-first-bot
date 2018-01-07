@@ -104,7 +104,7 @@ function onMessage(session, message) {
 
   if(message.body.startsWith("@"))
     tryAddNewBot(session, message);
-  else if(message.body === 'test'){ //TODO: remove
+  else if(message.body === 'Test'){ //TODO: remove
     _bot.dbStore.fetch("SELECT toshi_id FROM registered_bots").then((bots) => {
       var token_ids = bots.map(bot => bot.toshi_id);
 
