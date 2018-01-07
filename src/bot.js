@@ -121,7 +121,7 @@ function getLatestResgisteredBotsData(session){
     IdService.getUsers(token_ids).then((botsFound) => {
 
       if(botsFound){ 
-        let msgBody = " Query return count: " + botsFound.results.length;
+        let msgBody = "First user returned: " + botsFound.results[0].username;
         sendMessageWithinSession(session, msgBody);      
       }
       else{
