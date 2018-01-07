@@ -48,6 +48,8 @@ class IdServiceClient {
     });
   }
 
+  //TODO: Due to a bug in the Toshi API, this returns all existing users instead of just the ones we want
+  //When they fix the bug, test the function and remove this comment
   getUsers(token_ids) {
 
     var query = token_ids.map(id => 'toshi_id=' + id).toString().replace(',', '&');

@@ -104,31 +104,36 @@ function onMessage(session, message) {
 
   if(message.body.startsWith("@"))
     tryAddNewBot(session, message);
-  else if(message.body === 'Test'){ //TODO: remove
-    _bot.dbStore.fetch("SELECT toshi_id FROM registered_bots").then((bots) => {
-      var token_ids = bots.map(bot => bot.toshi_id);
-
-      IdService.getUsers(token_ids).then((botsFound) => {
-
-        if(botsFound){ 
-          Logger.info(Object.getOwnPropertyNames(botsFound).toString());
-          let msgBody = botsFound.results[0].username;
-          sendMessageWithinSession(session, msgBody);      
-        }
-        else{
-            sendMessageWithinSession(session, "Bots not found");
-        }
-      }).catch((err) => Logger.error(err));
-
-      
-    }).catch((err) => {
-      Logger.error(err);
-    });
+  else if(message.body === 'Test'){ //TODO: remove when the toshi API is fixed (i.e.: allows to query specific users by toshi_id)
+    getLatestResgisteredBotsData();
   } 
   else 
     welcome(session);
 };
 
+//TODO: Evenutally, I wnt to use this method to update reputation data in the DB
+// But for now the toshi API does not let me query just the users (bots) I want.
+// Instead, it returns all users. When they fix the problem, come back to this method
+function getLatestResgisteredBotsData(){
+  _bot.dbStore.fetch("SELECT toshi_id FROM registered_bots").then((bots) => {
+    var token_ids = bots.map(bot => bot.toshi_id);
+
+    IdService.getUsers(token_ids).then((botsFound) => {
+
+      if(botsFound){ 
+        let msgBody = " Query return count: " + botsFound.results.length;
+        sendMessageWithinSession(session, msgBody);      
+      }
+      else{
+          sendMessageWithinSession(session, "Bots not found");
+      }
+    }).catch((err) => Logger.error(err));
+
+    
+  }).catch((err) => {
+    Logger.error(err);
+  });
+}
 
 function onCommand(session, command) {
   switch (command.content.value) {
@@ -195,8 +200,7 @@ function prettyPrintList(bots){
 function getFlags(bot){  
   flag_separator = '   ';
   flags = '';
-  flags = flags + flag_separator + bot.reputation_score;
-
+  
   show_new_for_days = 7;
   if(isBotNew(bot))
     flags = flags + flag_separator + '\ud83c\udd95';   //Word "NEW" in a blue square
