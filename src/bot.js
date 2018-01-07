@@ -153,7 +153,7 @@ function welcome(session) {
 };
 
 function displayAllBots(session) {
-  _bot.dbStore.fetch("SELECT username, entry_created_on FROM registered_bots").then((bots) => {
+  _bot.dbStore.fetch("SELECT username, entry_created_on, reputation_score FROM registered_bots").then((bots) => {
 
     let msgBody = (bots && bots.length > 0) ? ("Here is the list of all registered bots:\n" + prettyPrintList(bots)) : "No bot listed yet. Maybe add one?";
 
@@ -169,10 +169,13 @@ function prettyPrintList(bots){
 
 function getFlags(bot){
   show_new_for_days = 7;
+  flag_separator = '   ';
+  flags = '';
   if(isBotNew(bot))
-    return '   \ud83c\udd95';   //Word "NEW" in a blue square
-  else
-  return '';
+    flags = flags + flag_separator + '\ud83c\udd95';   //Word "NEW" in a blue square
+
+  flags = flags + flag_separator + bot.reputation_score;
+  return flags;
 }
 
 function isBotNew(bot){
