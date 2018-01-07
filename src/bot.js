@@ -111,6 +111,7 @@ function onMessage(session, message) {
       IdService.getUsers(token_ids).then((botsFound) => {
 
         if(botsFound){ 
+          Logger.info(Object.getOwnPropertyNames(botsFound));
           let msgBody = botsFound[0].username;
           sendMessageWithinSession(session, msgBody);      
         }
