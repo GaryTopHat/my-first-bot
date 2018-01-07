@@ -129,7 +129,7 @@ function updateResgisteredBotsData(session){
 
       if(botsFound){ 
         //Delete bot where the toshi_id does not point to the same username anymore. Owner need to add it again.
-        botsFound.results.filter(bot => usernames.indexOf(bot.username) === -1).map(bot => deleteBotByUsername(session, bot.username));
+        botsFound.results.filter(bot => toshi_ids.indexOf(bot.toshi_id) > -1 && usernames.indexOf(bot.username) === -1).map(bot => deleteBotByUsername(session, bot.username));
         botsFound.results.filter(bot => toshi_ids.indexOf(bot.toshi_id) > -1).map(bot => updateBot(session, bot));
           
       }
