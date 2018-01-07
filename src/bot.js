@@ -57,15 +57,12 @@ CREATE TABLE IF NOT EXISTS registered_bots (
   average_rating decimal NULL,
   review_count decimal NULL
 );
-ALTER TABLE registered_bots DROP COLUMN IF EXISTS reputation_score;
-ALTER TABLE registered_bots DROP COLUMN IF EXISTS average_rating;
-ALTER TABLE registered_bots DROP COLUMN IF EXISTS review_count;
 
 ALTER TABLE registered_bots ADD COLUMN IF NOT EXISTS reputation_score decimal NULL;
 ALTER TABLE registered_bots ADD COLUMN IF NOT EXISTS average_rating decimal NULL;
 ALTER TABLE registered_bots ADD COLUMN IF NOT EXISTS review_count decimal NULL;
 `;
-//TODO remove the drop columns
+
 _bot.onReady = () => {
   _bot.dbStore = new PsqlStore(_bot.client.config.storage.postgres.url, process.env.STAGE || 'development');
   _bot.dbStore.initialize(DATABASE_TABLES).then(() => {}).catch((err) => {
