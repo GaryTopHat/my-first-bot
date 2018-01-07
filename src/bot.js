@@ -121,12 +121,15 @@ function onMessage(session, message) {
 
 
 function updateResgisteredBotsData(session){
-  _bot.dbStore.fetch("SELECT toshi_id FROM registered_bots").then((bots) => {
+  _bot.dbStore.fetch("SELECT toshi_id, username FROM registered_bots").then((bots) => {
     var toshi_ids = bots.map(bot => bot.toshi_id);
+    var usernames = bots.map(bot => bot.username);
     Logger.info(toshi_ids.toString());
     IdService.getUsers(toshi_ids).then((botsFound) => {
 
       if(botsFound){ 
+        //Delete bot where the toshi_id does not point to the same username anymore. Owner need to add it again.
+        botsFound.results.filter(bot => usernames.indexOf(bot.username) > -1).map(bot => deleteBotByUsername(session, bot.username));
         botsFound.results.filter(bot => toshi_ids.indexOf(bot.toshi_id) > -1).map(bot => updateBot(session, bot));
           
       }
@@ -279,6 +282,18 @@ function insertNewBot(session, newBot)
     Logger.error(err);
   });
 };
+
+function deleteBotByUsername(session, username)
+{
+  _bot.dbStore.execute("DELETE FROM registered_bots WHERE username=$1 ", 
+  [username])
+  .then(() => {
+
+    Logger.info("@" + username + " was removed from the list for toshi_id/username inconsistency.")
+  }).catch((err) => {
+    Logger.error(err);
+  });
+}
 
 function updateBot(session, bot)
 {
