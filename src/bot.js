@@ -79,9 +79,9 @@ _bot.onEvent = function(session, message) {
     return;  //Prevent spamming from other bots
   }
 
-  var dataRefreshIntervalHours = 5;
+  var dataRefreshIntervalHours = 6;
   var now = Date.now();
-  if(!_lastDataUpdateDate || now - _lastDataUpdateDate > (1000 * 60 *  dataRefreshIntervalHours)){
+  if(!_lastDataUpdateDate || now - _lastDataUpdateDate > (1000 * 60 * 60 *  dataRefreshIntervalHours)){
     updateResgisteredBotsData(session);
     _lastDataUpdateDate = now;
   }
@@ -109,6 +109,8 @@ function onMessage(session, message) {
 
   if(message.body.startsWith("@"))
     tryAddNewBot(session, message);
+  else if(message.body === "LastRepUpdate")
+    sendMessageWithinSession(session, _lastDataUpdateDate.toString());
   else 
     welcome(session);
 };
@@ -249,8 +251,11 @@ function tryAddNewBot(session, message){
          
           if(sameBotAlreadyInList)
             sendMessageWithinSession(session, atBotUserName + " is already in the list.");
-          else
+          else{
             insertNewBot(session, botFound);
+            updateResgisteredBotsData(session);
+            _lastDataUpdateDate = Date.now();
+          }
         });      
       }   
       else 
