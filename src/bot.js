@@ -227,7 +227,8 @@ function tryAddNewBot(session, message){
 
 function insertNewBot(session, newBot)
 {
-  _bot.dbStore.execute("INSERT INTO registered_bots (toshi_id, username, entry_created_by, entry_modified_by) VALUES ($1, $2, $3, $3) ", [newBot.toshi_id, newBot.username, session.user.toshi_id])
+  _bot.dbStore.execute("INSERT INTO registered_bots (toshi_id, username, entry_created_by, entry_modified_by, reputation_score, average_rating, review_count) VALUES ($1, $2, $3, $3, $4, $5, $6) ", 
+  [newBot.toshi_id, newBot.username, session.user.toshi_id, newBot.reputation_score, newBot.average_rating, newBot.review_count])
   .then(() => {
 
     sendMessageWithinSession(session, "@" + newBot.username + " was added to the list.")
