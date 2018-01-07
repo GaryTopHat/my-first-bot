@@ -280,7 +280,7 @@ function insertNewBot(session, newBot)
   });
 };
 
-function CFV(session, bot)
+function updateBot(session, bot)
 {
   _bot.dbStore.execute("UPDATE registered_bots SET entry_modified_by=$1, entry_modified_on=$2, reputation_score=$3, average_rating=$4, review_count=$5 WHERE toshi_id=$6", 
   [session.user.toshi_id, new Date(), bot.reputation_score, bot.average_rating, bot.review_count, bot.toshi_id,])
