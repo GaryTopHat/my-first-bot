@@ -106,7 +106,7 @@ function onMessage(session, message) {
     tryAddNewBot(session, message);
   else if(message.body === 'test'){ //TODO: remove
     _bot.dbStore.fetch("SELECT toshi_id FROM registered_bots").then((bots) => {
-      token_ids = bots.map(bot => bot.toshi_id);
+      var token_ids = bots.map(bot => bot.toshi_id);
 
       IdService.getUsers(token_ids).then((botsFound) => {
 

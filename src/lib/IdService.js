@@ -50,7 +50,7 @@ class IdServiceClient {
 
   getUsers(token_ids) {
 
-    query = token_ids.map(id => 'toshi_id=' + id).toString().replace(',', '&');
+    var query = token_ids.map(id => 'toshi_id=' + id).toString().replace(',', '&');
 
     return fetch({
       url: this._getUrl('/v1/search/user?' + query),
