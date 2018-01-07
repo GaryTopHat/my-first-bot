@@ -123,7 +123,7 @@ function onMessage(session, message) {
 function updateResgisteredBotsData(session){
   _bot.dbStore.fetch("SELECT toshi_id FROM registered_bots").then((bots) => {
     var toshi_ids = bots.map(bot => bot.toshi_id);
-
+    Logger.info(toshi_ids.toString());
     IdService.getUsers(toshi_ids).then((botsFound) => {
 
       if(botsFound){ 
@@ -207,7 +207,6 @@ function getFlags(bot){
   flag_separator = '   ';
   flags = flag_separator + prettyPrintRating(bot.average_rating);
   
-  show_new_for_days = 7;
   if(isBotNew(bot))
     flags = flags + flag_separator + '\ud83c\udd95';   //Word "NEW" in a blue square
   
@@ -281,7 +280,7 @@ function insertNewBot(session, newBot)
   });
 };
 
-function updateBot(session, bot)
+function CFV(session, bot)
 {
   _bot.dbStore.execute("UPDATE registered_bots SET entry_modified_by=$1, entry_modified_on=$2, reputation_score=$3, average_rating=$4, review_count=$5 WHERE toshi_id=$6", 
   [session.user.toshi_id, new Date(), bot.reputation_score, bot.average_rating, bot.review_count, bot.toshi_id,])
