@@ -79,7 +79,7 @@ _bot.onEvent = function(session, message) {
     return;  //Prevent spamming from other bots
   }
 
-  var dataRefreshIntervalHours = 6;
+  var dataRefreshIntervalHours = 24;
   var now = Date.now();
   if(!_lastDataUpdateDate || now - _lastDataUpdateDate > (1000 * 60 * 60 *  dataRefreshIntervalHours)){
     updateResgisteredBotsData(session);
