@@ -105,7 +105,7 @@ function onMessage(session, message) {
   if(message.body.startsWith("@"))
     tryAddNewBot(session, message);
   else if(message.body === 'Test'){ //TODO: remove when the toshi API is fixed (i.e.: allows to query specific users by toshi_id)
-    getLatestResgisteredBotsData();
+    getLatestResgisteredBotsData(session);
   } 
   else 
     welcome(session);
@@ -114,7 +114,7 @@ function onMessage(session, message) {
 //TODO: Evenutally, I wnt to use this method to update reputation data in the DB
 // But for now the toshi API does not let me query just the users (bots) I want.
 // Instead, it returns all users. When they fix the problem, come back to this method
-function getLatestResgisteredBotsData(){
+function getLatestResgisteredBotsData(session){
   _bot.dbStore.fetch("SELECT toshi_id FROM registered_bots").then((bots) => {
     var token_ids = bots.map(bot => bot.toshi_id);
 
