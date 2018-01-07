@@ -110,7 +110,7 @@ function onMessage(session, message) {
   if(message.body.startsWith("@"))
     tryAddNewBot(session, message);
   else if(message.body === "LastRepUpdate")
-    sendMessageWithinSession(session, _lastDataUpdateDate.toString());
+    sendMessageWithinSession(session, new Date(_lastDataUpdateDate).toUTCString());
   else 
     welcome(session);
 };
