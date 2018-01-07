@@ -191,7 +191,7 @@ function displayAllBots(session) {
 };
 
 function prettyPrintList(bots){
-  return bots.map(bot => "@" + bot.username + getFlags(bot)).sort((a,b) => a.average_rating > b.average_rating).join("\n");
+  return bots.sort((a,b) => a.average_rating - b.average_rating).map(bot => "@" + bot.username + getFlags(bot)).join("\n");
 }
 
 function getFlags(bot){  
