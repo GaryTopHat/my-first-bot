@@ -107,36 +107,44 @@ _bot.onEvent = function(session, message) {
 
 function onMessage(session, message) {
 
-  if(message.body.startsWith("@"))
-    tryAddNewBot(session, message);
-  else if(message.body === "ForceRepUpdate"){
-    updateResgisteredBotsData(session);
-    _lastDataUpdateDate = Date.now();
+  if(_bot.client.config.authorUsername === session.user.username)
+  {
+    if(message.body === "ForceRepUpdate"){
+      updateResgisteredBotsData(session);
+      _lastDataUpdateDate = Date.now();
+    }
+    else if(message.body === "LastRepUpdate")
+      sendMessageWithinSession(session, new Date(_lastDataUpdateDate).toUTCString());
+    else if(message.body.startsWith("Delete @")){
+      deleteBotByUsername(session, message.body.split("@")[1]);
+    }
   }
-  else if(message.body === "LastRepUpdate")
-    sendMessageWithinSession(session, new Date(_lastDataUpdateDate).toUTCString());
+  else if(message.body.startsWith("@"))
+    tryAddNewBot(session, message); 
   else 
     welcome(session);
 };
 
+function deleteBotByUsername(session, username)
+{
+  _bot.dbStore.execute("DELETE FROM registered_bots WHERE username=$1 ", 
+  [username])
+  .then(() => {
+
+    sendMessageWithinSession(session, "@" + username + " was removed from the list.");
+  }).catch((err) => {
+    Logger.error(err);
+  });
+}
 
 function updateResgisteredBotsData(session){
-  _bot.dbStore.fetch("SELECT toshi_id, username FROM registered_bots").then((bots) => {
-    var toshi_ids = bots.map(bot => bot.toshi_id);
-    var usernames = bots.map(bot => bot.username);
-    Logger.info(toshi_ids.toString());
-    Logger.info(usernames.toString());
-    IdService.getUsers(toshi_ids).then((botsFound) => {
+  _bot.dbStore.fetch("SELECT toshi_id, username FROM registered_bots").then((registeredBots) => {
+    var registered_toshi_ids = registeredBots.map(bot => bot.toshi_id);
+
+    IdService.getUsers(registered_toshi_ids).then((botsFound) => {
 
       if(botsFound){ 
-        //Delete bot where the toshi_id does not point to the same username anymore. Owner need to add it again.
-        botsFound.results.filter(bot => toshi_ids.indexOf(bot.toshi_id) > -1 && usernames
-          .indexOf(bot.username) === -1)
-          .map(bot => {
-            Logger.info("Inconsistent bot with toshi_id: " + bot.toshi_id + " and username: " + bot.username + ".")
-            deleteBotByUsername(session, bot.username);
-          });
-        botsFound.results.filter(bot => toshi_ids.indexOf(bot.toshi_id) > -1).map(bot => updateBot(session, bot));
+        botsFound.results.filter(bot => registered_toshi_ids.indexOf(bot.toshi_id) > -1).map(bot => updateBot(session, bot));
           
       }
       else{
@@ -289,17 +297,6 @@ function insertNewBot(session, newBot)
   });
 };
 
-function deleteBotByUsername(session, username)
-{
-  _bot.dbStore.execute("DELETE FROM registered_bots WHERE username=$1 ", 
-  [username])
-  .then(() => {
-
-    Logger.info("@" + username + " was removed from the list.")
-  }).catch((err) => {
-    Logger.error(err);
-  });
-}
 
 function updateBot(session, bot)
 {
