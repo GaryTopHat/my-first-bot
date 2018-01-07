@@ -119,7 +119,7 @@ function onMessage(session, message) {
       deleteBotByUsername(session, message.body.split("@")[1]);
     }
   }
-  else if(message.body.startsWith("@"))
+  if(message.body.startsWith("@"))
     tryAddNewBot(session, message); 
   else 
     welcome(session);
