@@ -196,7 +196,7 @@ function prettyPrintList(bots){
 
 function getFlags(bot){  
   flag_separator = '   ';
-  flags = '';
+  flags = flag_separator + bot.reputation_score;
   
   show_new_for_days = 7;
   if(isBotNew(bot))
@@ -266,8 +266,6 @@ function insertNewBot(session, newBot)
 
 function updateBot(session, bot)
 {
-  //sendMessageWithinSession(session, Date.now().toString() + '    ' + Date.now())
-  //Logger.info(Date.now().toString() + '    ' + Date.now());
   _bot.dbStore.execute("UPDATE registered_bots SET entry_modified_by=$1, entry_modified_on=$2, reputation_score=$3, average_rating=$4, review_count=$5 WHERE toshi_id=$6", 
   [session.user.toshi_id, new Date(), bot.reputation_score, bot.average_rating, bot.review_count, bot.toshi_id,])
   .then(() => {
