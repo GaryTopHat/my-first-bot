@@ -180,7 +180,7 @@ function welcome(session) {
 };
 
 function displayAllBots(session) {
-  _bot.dbStore.fetch("SELECT username, entry_created_on, reputation_score FROM registered_bots").then((bots) => {
+  _bot.dbStore.fetch("SELECT username, entry_created_on, average_rating FROM registered_bots ORDER BY average_rating").then((bots) => {
 
     let msgBody = (bots && bots.length > 0) ? ("Here is the list of all registered bots:\n" + prettyPrintList(bots)) : "No bot listed yet. Maybe add one?";
 
@@ -196,7 +196,7 @@ function prettyPrintList(bots){
 
 function getFlags(bot){  
   flag_separator = '   ';
-  flags = flag_separator + prettyPrintReputationScore(bot.reputation_score);
+  flags = flag_separator + prettyPrintRating(bot.average_rating);
   
   show_new_for_days = 7;
   if(isBotNew(bot))
@@ -205,7 +205,7 @@ function getFlags(bot){
   return flags;
 }
 
-function prettyPrintReputationScore(score)
+function prettyPrintRating(score)
 {
   if(score === null)
     return "No rating yet";
