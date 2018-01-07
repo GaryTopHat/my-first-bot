@@ -180,7 +180,7 @@ function welcome(session) {
 };
 
 function displayAllBots(session) {
-  _bot.dbStore.fetch("SELECT username, entry_created_on, average_rating FROM registered_bots ORDER BY average_rating").then((bots) => {
+  _bot.dbStore.fetch("SELECT username, entry_created_on, average_rating FROM registered_bots").then((bots) => {
 
     let msgBody = (bots && bots.length > 0) ? ("Here is the list of all registered bots:\n" + prettyPrintList(bots)) : "No bot listed yet. Maybe add one?";
 
@@ -191,7 +191,7 @@ function displayAllBots(session) {
 };
 
 function prettyPrintList(bots){
-  return bots.map(bot => "@" + bot.username + getFlags(bot)).sort().join("\n");
+  return bots.map(bot => "@" + bot.username + getFlags(bot)).sort((a,b) => a > b).join("\n");
 }
 
 function getFlags(bot){  
