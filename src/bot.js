@@ -267,7 +267,7 @@ function insertNewBot(session, newBot)
 function updateBot(session, bot)
 {
   _bot.dbStore.execute("UPDATE registered_bots SET entry_modified_by=$1, entry_modified_on=$2, reputation_score=$3, average_rating=$4, review_count=$5 WHERE toshi_id=$6", 
-  [session.user.toshi_id, Date.now, bot.reputation_score, bot.average_rating, bot.review_count, bot.toshi_id,])
+  [session.user.toshi_id, Date.now.toString(), bot.reputation_score, bot.average_rating, bot.review_count, bot.toshi_id,])
   .then(() => {
 
     Logger.error("Successfuly updated @" + bot.username)
