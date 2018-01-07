@@ -112,7 +112,7 @@ function onMessage(session, message) {
 
         if(botsFound){ 
           Logger.info(Object.getOwnPropertyNames(botsFound).toString());
-          let msgBody = botsFound[0].username;
+          let msgBody = botsFound.results[0].username;
           sendMessageWithinSession(session, msgBody);      
         }
         else{

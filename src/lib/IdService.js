@@ -55,8 +55,8 @@ class IdServiceClient {
     return fetch({
       url: this._getUrl('/v1/search/user?' + query),
       json: true
-    }).then((results) => {
-      return results;
+    }).then((response) => {
+      return response;
     }).catch((err) => {
       Logger.error(err);
       return null;
