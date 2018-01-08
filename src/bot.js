@@ -287,7 +287,7 @@ function updateBotReputation(session, bot)
 
 function updateBotVisibilityByUsername(session, username, isVisible)
 {
-  _bot.dbStore.execute("UPDATE registered_bots SET entry_modified_by=$1, entry_modified_on=$2, is_visible_on_list=$3 WHERE toshi_id=$4", 
+  _bot.dbStore.execute("UPDATE registered_bots SET entry_modified_by=$1, entry_modified_on=$2, is_visible_on_list=$3 WHERE username=$4", 
   [session.user.toshi_id, new Date(), isVisible, username,])
   .then(() => {
 
