@@ -245,7 +245,7 @@ function tryAddNewBot(session, message){
             if(sameBotAlreadyInList.is_visible_on_list)
               sendMessageWithinSession(session, atBotUserName + " is already in the list.");
             else
-            sendMessageWithinSession(session, "The owner of " + atBotUserName + " ask for it to not appear in the list.");
+            sendMessageWithinSession(session, "The owner of " + atBotUserName + " asked for it to not appear in the list.");
           }
           else
             insertNewBot(session, botFound);
