@@ -120,9 +120,9 @@ function onMessage(session, message) {
     else if(message.body.startsWith("Delete @"))
       deleteBotByUsername(session, message.body.split("@")[1]);
     else if(message.body.startsWith("Hide @"))
-      updateBotVisibilityByUserName(session, message.body.split("@")[1], false);
+      updateBotVisibilityByUsername(session, message.body.split("@")[1], false);
     else if(message.body.startsWith("Unhide @"))
-      updateBotVisibilityByUserName(session, message.body.split("@")[1], true);
+      updateBotVisibilityByUsername(session, message.body.split("@")[1], true);
   }
   if(message.body.startsWith("@"))
     tryAddNewBot(session, message); 
