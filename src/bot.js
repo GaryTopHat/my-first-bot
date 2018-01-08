@@ -48,19 +48,21 @@ CREATE TABLE IF NOT EXISTS registered_bots (
     toshi_id VARCHAR PRIMARY KEY,
     username VARCHAR UNIQUE,
     entry_created_on TIMESTAMP WITHOUT TIME ZONE DEFAULT (now() AT TIME ZONE 'utc'),
-	entry_created_by VARCHAR,
+	  entry_created_by VARCHAR,
     entry_modified_on TIMESTAMP WITHOUT TIME ZONE DEFAULT (now() AT TIME ZONE 'utc'),
-	entry_modified_by VARCHAR,
+	  entry_modified_by VARCHAR,
     is_online BOOLEAN DEFAULT TRUE,
-  is_working_properly BOOLEAN DEFAULT TRUE,
-  reputation_score decimal NULL,
-  average_rating decimal NULL,
-  review_count decimal NULL
+    is_working_properly BOOLEAN DEFAULT TRUE,
+    reputation_score decimal NULL,
+    average_rating decimal NULL,
+    review_count decimal NULL,
+    is_visible_on_list BOOLEAN DEFAULT TRUE
 );
 
 ALTER TABLE registered_bots ADD COLUMN IF NOT EXISTS reputation_score decimal NULL;
 ALTER TABLE registered_bots ADD COLUMN IF NOT EXISTS average_rating decimal NULL;
 ALTER TABLE registered_bots ADD COLUMN IF NOT EXISTS review_count decimal NULL;
+ALTER TABLE registered_bots ADD COLUMN IF NOT EXISTS is_visible_on_list BOOLEAN DEFAULT TRUE;
 `;
 
 _bot.onReady = () => {
@@ -115,48 +117,18 @@ function onMessage(session, message) {
     }
     else if(message.body === "LastRepUpdate")
       sendMessageWithinSession(session, new Date(_lastDataUpdateDate).toUTCString());
-    else if(message.body.startsWith("Delete @")){
+    else if(message.body.startsWith("Delete @"))
       deleteBotByUsername(session, message.body.split("@")[1]);
-    }
+    else if(message.body.startsWith("Hide @"))
+      updateBotVisibilityByUserName(session, message.body.split("@")[1], false);
+    else if(message.body.startsWith("Unhide @"))
+      updateBotVisibilityByUserName(session, message.body.split("@")[1], true);
   }
   if(message.body.startsWith("@"))
     tryAddNewBot(session, message); 
   else 
     welcome(session);
 };
-
-function deleteBotByUsername(session, username)
-{
-  _bot.dbStore.execute("DELETE FROM registered_bots WHERE username=$1 ", 
-  [username])
-  .then(() => {
-
-    sendMessageWithinSession(session, "@" + username + " was removed from the list.");
-  }).catch((err) => {
-    Logger.error(err);
-  });
-}
-
-function updateResgisteredBotsData(session){
-  _bot.dbStore.fetch("SELECT toshi_id, username FROM registered_bots").then((registeredBots) => {
-    var registered_toshi_ids = registeredBots.map(bot => bot.toshi_id);
-
-    IdService.getUsers(registered_toshi_ids).then((botsFound) => {
-
-      if(botsFound){ 
-        botsFound.results.filter(bot => registered_toshi_ids.indexOf(bot.toshi_id) > -1).map(bot => updateBot(session, bot));
-          
-      }
-      else{
-          Logger.info(session, "No bot found to update");
-      }
-    }).catch((err) => Logger.error(err));
-
-    
-  }).catch((err) => {
-    Logger.error(err);
-  });
-}
 
 function onCommand(session, command) {
   switch (command.content.value) {
@@ -206,7 +178,7 @@ function welcome(session) {
 };
 
 function displayAllBots(session) {
-  _bot.dbStore.fetch("SELECT username, entry_created_on, average_rating FROM registered_bots").then((bots) => {
+  _bot.dbStore.fetch("SELECT username, entry_created_on, average_rating FROM registered_bots WHERE is_visible_on_list=TRUE").then((bots) => {
 
     let msgBody = (bots && bots.length > 0) ? ("Here is the list of all registered bots:\n" + prettyPrintList(bots)) : "No bot listed yet. Maybe add one?";
 
@@ -269,8 +241,12 @@ function tryAddNewBot(session, message){
       if(botFound.is_app){
         fetchResigsteredBotByToshiId(botFound.toshi_id).then((sameBotAlreadyInList) => {
          
-          if(sameBotAlreadyInList)
-            sendMessageWithinSession(session, atBotUserName + " is already in the list.");
+          if(sameBotAlreadyInList){
+            if(sameBotAlreadyInList.is_visible_on_list)
+              sendMessageWithinSession(session, atBotUserName + " is already in the list.");
+            else
+            sendMessageWithinSession(session, "The owner of " + atBotUserName + " ask for it to not appear in the list.");
+          }
           else
             insertNewBot(session, botFound);
         });      
@@ -297,14 +273,25 @@ function insertNewBot(session, newBot)
   });
 };
 
-
-function updateBot(session, bot)
+function updateBotReputation(session, bot)
 {
   _bot.dbStore.execute("UPDATE registered_bots SET entry_modified_by=$1, entry_modified_on=$2, reputation_score=$3, average_rating=$4, review_count=$5 WHERE toshi_id=$6", 
   [session.user.toshi_id, new Date(), bot.reputation_score, bot.average_rating, bot.review_count, bot.toshi_id,])
   .then(() => {
 
     Logger.info("Successfuly updated @" + bot.username);
+  }).catch((err) => {
+    Logger.error(err);
+  });
+};
+
+function updateBotVisibilityByUsername(session, username, isVisible)
+{
+  _bot.dbStore.execute("UPDATE registered_bots SET entry_modified_by=$1, entry_modified_on=$2, is_visible_on_list=$3 WHERE toshi_id=$4", 
+  [session.user.toshi_id, new Date(), isVisible, username,])
+  .then(() => {
+
+    sendMessageWithinSession(session, "@" + username + " visibility set to " + isVisible);
   }).catch((err) => {
     Logger.error(err);
   });
@@ -318,7 +305,38 @@ function fetchResigsteredBotByToshiId(bot_toshi_id)
   }).catch((err) => Logger.error(err));
 };
 
+function deleteBotByUsername(session, username)
+{
+  _bot.dbStore.execute("DELETE FROM registered_bots WHERE username=$1 ", 
+  [username])
+  .then(() => {
 
+    sendMessageWithinSession(session, "@" + username + " was removed from the list.");
+  }).catch((err) => {
+    Logger.error(err);
+  });
+}
+
+function updateResgisteredBotsData(session){
+  _bot.dbStore.fetch("SELECT toshi_id, username FROM registered_bots").then((registeredBots) => {
+    var registered_toshi_ids = registeredBots.map(bot => bot.toshi_id);
+
+    IdService.getUsers(registered_toshi_ids).then((botsFound) => {
+
+      if(botsFound){ 
+        botsFound.results.filter(bot => registered_toshi_ids.indexOf(bot.toshi_id) > -1).map(bot => updateBotReputation(session, bot));
+          
+      }
+      else{
+          Logger.info(session, "No bot found to update");
+      }
+    }).catch((err) => Logger.error(err));
+
+    
+  }).catch((err) => {
+    Logger.error(err);
+  });
+}
 // HELPERS
 
 function sendMessageWithinSession(session, msgBody) {
