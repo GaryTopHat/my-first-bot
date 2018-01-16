@@ -15,6 +15,10 @@ const FAQ = {
     label: 'About',
     message: `This bot is a list of bots on Toshi. Maintained by users like you, for users like you.\nTo make the list as complete as possible, please add the bots you find! \ud83d\ude4b` // :raised_hand:
   },
+  'faq:weather': {
+    label: 'What do the weather icons mean?',
+    message: `The weather icons give a quick idea of the bots'reputation score calculated by Toshi based on average rating, and number of ratings.`
+  },
   'faq:payment': {
     label: "Donations",
     message: `Feel free to send any amount to this bot as a donation. 🙏` // :folded_hands:
