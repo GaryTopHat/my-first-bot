@@ -212,13 +212,15 @@ function prettyPrintRating(score)
     return "No rating yet";
   else if(score >= 4.5)
     return '\ud83d\udd25'; //Fire
-  else if (score >= 3)
+  else if (score >= 3.5)
     return '\u2600'; //Sun with rays
+  else if (score >= 2.5)
+    return '\uD83C\uDF24'; //Sun behind small cloud 
+  else if (score >= 2)
+    return '\u26c5'; //Sun behind large cloud 
   else if (score >= 1.5)
-    return '\u26c5'; //Sun behind clouds 
-  else if (score >= 0.5)
     return '\u2601'; //Cloud
-  else if (score >= 0.0)
+  else if (score >= 0)
     return '\u2614'; //Umbrella with rain drops 
 
   return '';
