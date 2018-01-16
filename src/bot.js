@@ -17,7 +17,7 @@ const FAQ = {
   },
   'faq:weather': {
     label: 'What do the weather icons mean?',
-    message: `The weather icons give a quick idea of the bots'reputation score calculated by Toshi based on average rating, and number of ratings.`
+    message: `The weather icons give a quick idea of each bot's reputation score calculated by Toshi based on average rating, and number of ratings.`
   },
   'faq:payment': {
     label: "Donations",
