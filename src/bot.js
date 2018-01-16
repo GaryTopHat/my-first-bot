@@ -178,7 +178,7 @@ function welcome(session) {
 };
 
 function displayAllBots(session) {
-  _bot.dbStore.fetch("SELECT username, entry_created_on, average_rating FROM registered_bots WHERE is_visible_on_list=TRUE").then((bots) => {
+  _bot.dbStore.fetch("SELECT username, entry_created_on, reputation_score FROM registered_bots WHERE is_visible_on_list=TRUE").then((bots) => {
 
     let msgBody = (bots && bots.length > 0) ? ("Here is the list of all registered bots:\n" + prettyPrintList(bots)) : "No bot listed yet. Maybe add one?";
 
@@ -189,12 +189,12 @@ function displayAllBots(session) {
 };
 
 function prettyPrintList(bots){
-  return bots.sort((a,b) => a.average_rating - b.average_rating).map(bot => "@" + bot.username + getFlags(bot)).join("\n");
+  return bots.sort((a,b) => a.reputation_score - b.reputation_score).map(bot => "@" + bot.username + getFlags(bot)).join("\n");
 }
 
 function getFlags(bot){  
   flag_separator = '   ';
-  flags = flag_separator + prettyPrintRating(bot.average_rating);
+  flags = flag_separator + prettyPrintRating(bot.reputation_score);
   
   if(isBotNew(bot))
     flags = flags + flag_separator + '\ud83c\udd95';   //Word "NEW" in a blue square
@@ -206,9 +206,18 @@ function prettyPrintRating(score)
 {
   if(score === null)
     return "No rating yet";
-  else
-    return '\u2b50'.repeat(Math.round(score)); //Stars
+  else if(score >= 4.5)
+    return '\ud83d\udd25'; //Fire
+  else if (score >= 3)
+    return '\u2600'; //Sun with rays
+  else if (score >= 1.5)
+    return '\u26c5'; //Sun behind clouds 
+  else if (score >= 0.5)
+    return '\u2601'; //Cloud
+  else if (score >= 0.0)
+    return '\u2614'; //Umbrella with rain drops 
 
+  return '';
 }
 function isBotNew(bot){
   show_new_for_days = 7;
