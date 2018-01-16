@@ -216,8 +216,8 @@ function prettyPrintRating(score)
     return '\u2600'; //Sun with rays
   else if (score >= 2.5)
     return '\uD83C\uDF24'; //Sun behind small cloud 
-  else if (score >= 2)
-    return '\u26c5'; //Sun behind large cloud 
+  /* else if (score >= 2)
+    return '\u26c5'; //Sun behind large cloud */
   else if (score >= 1.5)
     return '\u2601'; //Cloud
   else if (score >= 0)
