@@ -193,12 +193,12 @@ function displayAllBots(session) {
 };
 
 function prettyPrintList(bots){
-  return bots.sort((a,b) => a.reputation_score - b.reputation_score).map(bot => "@" + bot.username + getFlags(bot)).join("\n");
+  return bots.sort((a,b) => a.reputation_score - b.reputation_score).map(bot => getFlags(bot)).join("\n");
 }
 
 function getFlags(bot){  
   flag_separator = '   ';
-  flags = flag_separator + prettyPrintRating(bot.reputation_score);
+  flags = prettyPrintRating(bot.reputation_score) + flag_separator + "@" + bot.username;
   
   if(isBotNew(bot))
     flags = flags + flag_separator + '\ud83c\udd95';   //Word "NEW" in a blue square
@@ -209,7 +209,7 @@ function getFlags(bot){
 function prettyPrintRating(score)
 {
   if(score === null)
-    return "No rating yet";
+    return "?";
   else if(score >= 4.5)
     return '\ud83d\udd25'; //Fire
   else if (score >= 3.5)
