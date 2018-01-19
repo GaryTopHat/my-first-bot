@@ -193,11 +193,15 @@ function displayAllBots(session) {
 };
 
 function prettyPrintList(bots){
-  return bots.sort((a,b) => a.reputation_score - b.reputation_score).map(bot => GetBotInfo(bot)).join("\n");
+  separator = '\t';
+  return  getColumnHeaders(separator)
+  + bots.sort((a,b) => a.reputation_score - b.reputation_score).map(bot => getBotInfo(bot, seperator)).join("\n");
 }
 
-function GetBotInfo(bot){  
-  separator = '   ';
+function getColumnHeaders(seperator){
+  return "Reputation" + seperator + "Username";
+}
+function getBotInfo(bot, seperator){  
   botInfo = prettyPrintRating(bot.reputation_score) + separator + "@" + bot.username;
   
   if(isBotNew(bot))
