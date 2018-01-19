@@ -194,13 +194,9 @@ function displayAllBots(session) {
 
 function prettyPrintList(bots){
   var separator = '\t';
-  return  getColumnHeaders(separator)
-  + bots.sort((a,b) => a.reputation_score - b.reputation_score).map(bot => getBotInfo(bot, separator)).join("\n");
+  return  bots.sort((a,b) => a.reputation_score - b.reputation_score).map(bot => getBotInfo(bot, separator)).join("\n");
 }
 
-function getColumnHeaders(separator){
-  return "Reputation" + separator + "Username";
-}
 function getBotInfo(bot, separator){  
   botInfo = prettyPrintRating(bot.reputation_score) + separator + "@" + bot.username;
   
