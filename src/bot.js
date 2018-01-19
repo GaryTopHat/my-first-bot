@@ -184,7 +184,7 @@ function welcome(session) {
 function displayAllBots(session) {
   _bot.dbStore.fetch("SELECT username, entry_created_on, reputation_score FROM registered_bots WHERE is_visible_on_list=TRUE").then((bots) => {
 
-    let msgBody = (bots && bots.length > 0) ? ("Here is the list of all registered bots:\n" + prettyPrintList(bots)) : "No bot listed yet. Maybe add one?";
+    let msgBody = (bots && bots.length > 0) ? (prettyPrintList(bots)) : "No bot listed yet. Maybe add one?";
 
     sendMessageWithinSession(session, msgBody);
   }).catch((err) => {
@@ -193,7 +193,7 @@ function displayAllBots(session) {
 };
 
 function prettyPrintList(bots){
-  separator = '\t';
+  var separator = '\t';
   return  getColumnHeaders(separator)
   + bots.sort((a,b) => a.reputation_score - b.reputation_score).map(bot => getBotInfo(bot, seperator)).join("\n");
 }
