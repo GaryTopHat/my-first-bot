@@ -193,17 +193,17 @@ function displayAllBots(session) {
 };
 
 function prettyPrintList(bots){
-  return bots.sort((a,b) => a.reputation_score - b.reputation_score).map(bot => getFlags(bot)).join("\n");
+  return bots.sort((a,b) => a.reputation_score - b.reputation_score).map(bot => GetBotInfo(bot)).join("\n");
 }
 
-function getFlags(bot){  
-  flag_separator = '   ';
-  flags = prettyPrintRating(bot.reputation_score) + flag_separator + "@" + bot.username;
+function GetBotInfo(bot){  
+  separator = '   ';
+  botInfo = prettyPrintRating(bot.reputation_score) + separator + "@" + bot.username;
   
   if(isBotNew(bot))
-    flags = flags + flag_separator + '\ud83c\udd95';   //Word "NEW" in a blue square
+  botInfo = botInfo + separator + '\ud83c\udd95';   //Word "NEW" in a blue square
   
-  return flags;
+  return botInfo;
 }
 
 function prettyPrintRating(score)
